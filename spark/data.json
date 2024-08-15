@@ -1,0 +1,9 @@
+{
+    "shipment_id": "SHIP123",
+    "origin": "New York",
+    "destination": "Los Angeles",
+    "current_location": "Chicago",
+    "status": "In Transit",
+    "eta": "2024-08-20"
+  }
+  
