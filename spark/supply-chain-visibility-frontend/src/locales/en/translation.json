@@ -1,0 +1,17 @@
+{
+    "shipment_details": "Shipment Details",
+    "edit": "Edit",
+    "go_back": "Go Back to Main Page",
+    "id": "ID",
+    "shipment_id": "Shipment ID",
+    "origin": "Origin",
+    "destination": "Destination",
+    "current_location": "Current Location",
+    "status": "Status",
+    "eta": "ETA",
+    "shipment_progress": "Shipment Progress",
+    "real_time_shipment_tracking": "Real-Time Shipment Tracking",
+    "predict_shipment_eta": "Predict Shipment ETA",
+    "add_shipment": "Add Shipment"
+  }
+  

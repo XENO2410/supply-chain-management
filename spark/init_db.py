@@ -24,6 +24,19 @@ def init_db():
     )
     ''')
 
+    # Create a table for shipment history
+    c.execute('''CREATE TABLE IF NOT EXISTS shipment_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        shipment_id INTEGER,
+        update_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+        previous_status TEXT,
+        new_status TEXT,
+        previous_location TEXT,
+        new_location TEXT,
+        updated_by TEXT,
+        FOREIGN KEY (shipment_id) REFERENCES shipments(id)
+    )''')
+
     conn.commit()
     conn.close()
 

@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=D:\spark\venv
+set VIRTUAL_ENV=C:\Users\tarun\OneDrive\Documents\GitHub\supply-chain-management\spark\venv
 
 if not defined PROMPT set PROMPT=$P$G
 

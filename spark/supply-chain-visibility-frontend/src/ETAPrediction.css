@@ -1,0 +1,61 @@
+.eta-container {
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.eta-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: #343a40;
+}
+
+.eta-input {
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.eta-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2rem;
+    background-color: #007bff;
+    border-color: #007bff;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+    margin-bottom: 20px;
+}
+
+.eta-button:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.eta-result {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #e9f7ef;
+    border-color: #d4edda;
+    color: #155724;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.eta-back-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+}
+
+.eta-back-button:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}

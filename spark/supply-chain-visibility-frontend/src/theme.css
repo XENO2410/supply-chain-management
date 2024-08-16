@@ -1,0 +1,47 @@
+:root {
+    --primary-color: #007bff;
+    --background-color: #ffffff;
+    --text-color: #000000;
+    --button-bg-color: #007bff;
+    --button-text-color: #ffffff;
+  }
+  
+  [data-theme='dark'] {
+    --primary-color: #1e1e1e;
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --button-bg-color: #343a40;
+    --button-text-color: #ffffff;
+  }
+  
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .navbar {
+    background-color: var(--primary-color);
+  }
+  
+  .btn-primary {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+  }
+  
+  .table {
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .table th,
+  .table td {
+    border-color: var(--primary-color);
+  }
+  
+  .container {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  

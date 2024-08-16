@@ -1,0 +1,17 @@
+{
+    "shipment_details": "Detalles del Envío",
+    "edit": "Editar",
+    "go_back": "Volver a la Página Principal",
+    "id": "ID",
+    "shipment_id": "ID de Envío",
+    "origin": "Origen",
+    "destination": "Destino",
+    "current_location": "Ubicación Actual",
+    "status": "Estado",
+    "eta": "ETA",
+    "shipment_progress": "Progreso del Envío",
+    "real_time_shipment_tracking": "Seguimiento en Tiempo Real del Envío",
+    "predict_shipment_eta": "Predecir ETA del Envío",
+    "add_shipment": "Agregar Envío"
+  }
+  
