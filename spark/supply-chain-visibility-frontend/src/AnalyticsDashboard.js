@@ -25,7 +25,7 @@ function AnalyticsDashboard() {
   useEffect(() => {
     const fetchAnalyticsData = async () => {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://127.0.0.1:5000/api/analytics", {
+      const response = await fetch("https://wmsparktrack.onrender.com/api/analytics", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

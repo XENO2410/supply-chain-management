@@ -5,12 +5,12 @@ import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-ro
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import ShipmentDetail from "./ShipmentDetail";
 import Login from "./Login";
-import Register from "./Register"; // Import Register component
+import Register from "./Register";
 import ETAPrediction from "./ETAPrediction";
 import AnalyticsDashboard from "./AnalyticsDashboard";
-import AddShipment from "./AddShipment"; // Import AddShipment component
-import LandingPage from "./LandingPage"; // Import Landing Page component
-import "leaflet/dist/leaflet.css"; // Import Leaflet CSS
+import AddShipment from "./AddShipment";
+import LandingPage from "./LandingPage";
+import "leaflet/dist/leaflet.css";
 import { Table } from "react-bootstrap";
 
 
@@ -38,7 +38,7 @@ function App() {
   useEffect(() => {
     const fetchData = () => {
       const token = localStorage.getItem("token");
-      fetch("http://127.0.0.1:5000/api/shipments", {
+      fetch("https://wmsparktrack.onrender.com/api/shipments", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -137,7 +137,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} /> {/* Landing Page Route */}
+        <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={
           <PrivateRoute>
             <>

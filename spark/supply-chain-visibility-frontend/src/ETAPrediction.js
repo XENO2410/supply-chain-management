@@ -11,7 +11,7 @@ const ETAPrediction = () => {
     const [predictedETA, setPredictedETA] = useState(null);
 
     const predictETA = async () => {
-        const response = await fetch('http://127.0.0.1:5000/api/predict_eta', {
+        const response = await fetch('https://wmsparktrack.onrender.com/api/predict_eta', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

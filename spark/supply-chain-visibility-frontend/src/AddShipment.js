@@ -24,7 +24,7 @@ function AddShipment() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Submit the form data to the backend API
-    fetch("http://127.0.0.1:5000/api/shipments", {
+    fetch("https://wmsparktrack.onrender.com/api/shipments", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

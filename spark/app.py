@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, request, session, redirect, url_for
+from flask import Flask, jsonify, request, session, redirect, url_for, send_from_directory
+import os
 import sqlite3
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -10,7 +11,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import pickle
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='supply-chain-visibility-frontend/build')
 app.secret_key = 'a_random_string_with_numbers_1234567890_and_symbols_!@#$%^&*()'
 CORS(app)
 bcrypt = Bcrypt(app)
@@ -85,8 +86,16 @@ def logout():
 def protected():
     return jsonify({"message": f"Hello, {current_user.username}!"})
 
-# Shipment API endpoints
+# Serve React App
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react_app(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
+# Shipment API endpoints
 @app.route('/api/shipments', methods=['GET'])
 def get_shipments():
     conn = sqlite3.connect('supply_chain.db')

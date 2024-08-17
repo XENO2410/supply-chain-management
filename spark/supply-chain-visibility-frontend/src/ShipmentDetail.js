@@ -48,7 +48,7 @@ function ShipmentDetail() {
   const currentLocationCoordinates = [41.8781, -87.6298]; // Chicago
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:5000/api/shipments/${id}`)
+    fetch(`https://wmsparktrack.onrender.com/api/shipments/${id}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
