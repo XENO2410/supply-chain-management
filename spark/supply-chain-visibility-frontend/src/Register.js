@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import './shared.css'; // Import the common CSS file
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -32,48 +33,50 @@ function Register() {
   };
 
   return (
-    <Container>
-      <h2 className="mt-4">Register</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formUsername">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </Form.Group>
+    <div className="auth-container">
+      <div className="auth-form-wrapper">
+        <h1 className="auth-title">Create New Account</h1>
+        {error && <p className="text-danger">{error}</p>}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="formUsername">
+            <Form.Control
+              type="text"
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-        <Form.Group controlId="formPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="formPassword" className="mt-3">
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-        <Form.Group controlId="formConfirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="formConfirmPassword" className="mt-3">
+            <Form.Control
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-        <Button variant="primary" type="submit" className="mt-3">
-          Register
-        </Button>
-      </Form>
-    </Container>
+          <Button variant="primary" type="submit" className="auth-button mt-4">
+            Create Account
+          </Button>
+        </Form>
+        <div className="mt-3">
+          <Link to="/login" className="text-link">Already a member? Log In</Link>
+        </div>
+      </div>
+    </div>
   );
 }
 

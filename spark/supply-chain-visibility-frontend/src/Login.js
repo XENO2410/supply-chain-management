@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Container, Form, Button } from 'react-bootstrap';
+import { useNavigate, Link } from 'react-router-dom';
+import { Form, Button } from 'react-bootstrap';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import './shared.css'; // Import the common CSS file
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -18,55 +21,68 @@ function Login() {
       },
       body: JSON.stringify({ username, password }),
     })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then((data) => {
-          throw new Error(data.error || 'Login failed');
-        });
-      }
-      return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-      console.log('Login successful:', data);
-      localStorage.setItem('token', data.access_token);
-      navigate('/');
+      if (data.access_token) {
+        localStorage.setItem('token', data.access_token);
+        navigate('/');
+      } else {
+        setError('Invalid username or password');
+      }
     })
-    .catch(error => {
-      console.error('Login error:', error);
-      setError('Invalid username or password');
-    });
+    .catch(() => setError('An error occurred. Please try again.'));
   };
 
   return (
-    <Container className="mt-5">
-      <h1>Login</h1>
-      {error && <p className="text-danger">{error}</p>}
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formUsername">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Form.Group>
+    <div className="auth-container">
+      <div className="auth-form-wrapper">
+        <h1 className="auth-title">Login</h1>
+        <p className="auth-subtitle">Track your shipments in real-time with our comprehensive tool.</p>
+        {error && <p className="text-danger">{error}</p>}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="formUsername">
+            <Form.Control
+              type="text"
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </Form.Group>
 
-        <Form.Group controlId="formPassword" className="mt-3">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
+          <Form.Group controlId="formPassword" className="mt-3">
+            <div className="password-wrapper">
+              <Form.Control
+                type={passwordVisible ? "text" : "password"}
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Button 
+                variant="outline-secondary" 
+                className="toggle-password" 
+                onClick={() => setPasswordVisible(!passwordVisible)}>
+                {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+              </Button>
+            </div>
+          </Form.Group>
 
-        <Button variant="primary" type="submit" className="mt-4">
-          Login
-        </Button>
-      </Form>
-    </Container>
+          <Button variant="primary" type="submit" className="auth-button mt-4">
+            Get Started
+          </Button>
+        </Form>
+        <div className="mt-3">
+          <Link to="/forgot-password" className="text-link">Forgot password?</Link>
+        </div>
+        <div className="mt-3">
+          <span>New user? <Link to="/register" className="text-link">Register</Link></span>
+        </div>
+        {/* <div className="social-login-options mt-4">
+          <button>Google</button>
+          <button>Facebook</button>
+          <button>Apple</button>
+        </div> */}
+      </div>
+    </div>
   );
 }
 

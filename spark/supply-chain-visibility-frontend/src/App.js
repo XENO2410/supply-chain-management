@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Navbar, Nav, Form, FormControl, Pagination, Button, Collapse, Row, Col } from "react-bootstrap";
+import { Container, Navbar, Nav, Form, FormControl, Pagination, Button, Collapse, Row, Col, Table } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import ShipmentDetail from "./ShipmentDetail";
@@ -10,9 +10,8 @@ import ETAPrediction from "./ETAPrediction";
 import AnalyticsDashboard from "./AnalyticsDashboard";
 import AddShipment from "./AddShipment";
 import LandingPage from "./LandingPage";
+import ForgotPassword from "./ForgotPassword"; // Import the ForgotPassword component
 import "leaflet/dist/leaflet.css";
-import { Table } from "react-bootstrap";
-
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -381,6 +380,7 @@ function App() {
         <Route path="/add_shipment" element={<PrivateRoute><AddShipment /></PrivateRoute>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Added ForgotPassword route */}
       </Routes>
     </Router>
   );

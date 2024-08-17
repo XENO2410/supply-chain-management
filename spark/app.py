@@ -74,6 +74,12 @@ def login():
         return jsonify({"message": "Login successful"}), 200
     return jsonify({"error": "Invalid username or password"}), 401
 
+@app.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    email = request.json.get('email')
+    # Implement email sending logic here, typically using a service like SendGrid or AWS SES
+    return jsonify({"message": "Password reset link sent if the email is registered."}), 200
+
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():

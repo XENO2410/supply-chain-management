@@ -1,13 +1,21 @@
 .landing-page-container {
   position: relative;
   width: 100%;
-  height: 100vh; /* Full viewport height */
+  height: 100vh;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
   text-align: center;
+}
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
 }
 
 .landing-video-background {
@@ -26,7 +34,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%; /* Ensure the content takes up the full height of the container */
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.landing-content.fade-in {
+  opacity: 1;
 }
 
 .landing-title {
@@ -51,4 +65,24 @@
 
 .landing-button:hover {
   background-color: #e0a800;
+}
+
+.animated-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.animated-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.4s ease-in-out;
+}
+
+.animated-button:hover::after {
+  left: 100%;
 }
