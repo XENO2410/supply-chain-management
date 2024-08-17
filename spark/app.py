@@ -1,5 +1,4 @@
-from flask import Flask, jsonify, request, send_from_directory
-import os
+from flask import Flask, jsonify, request, session, redirect, url_for
 import sqlite3
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -9,9 +8,10 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+import pickle
 
-app = Flask(__name__, static_folder='supply-chain-visibility-frontend/build')
-app.secret_key = os.environ.get('SECRET_KEY', 'a_random_string_with_numbers_1234567890_and_symbols_!@#$%^&*()')
+app = Flask(__name__)
+app.secret_key = 'a_random_string_with_numbers_1234567890_and_symbols_!@#$%^&*()'
 CORS(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
@@ -73,12 +73,6 @@ def login():
         return jsonify({"message": "Login successful"}), 200
     return jsonify({"error": "Invalid username or password"}), 401
 
-@app.route('/forgot-password', methods=['POST'])
-def forgot_password():
-    email = request.json.get('email')
-    # Implement email sending logic here, typically using a service like SendGrid or AWS SES
-    return jsonify({"message": "Password reset link sent if the email is registered."}), 200
-
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
@@ -91,16 +85,8 @@ def logout():
 def protected():
     return jsonify({"message": f"Hello, {current_user.username}!"})
 
-# Serve React App
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_react_app(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
-
 # Shipment API endpoints
+
 @app.route('/api/shipments', methods=['GET'])
 def get_shipments():
     conn = sqlite3.connect('supply_chain.db')

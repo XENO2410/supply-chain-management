@@ -10,7 +10,7 @@ import ETAPrediction from "./ETAPrediction";
 import AnalyticsDashboard from "./AnalyticsDashboard";
 import AddShipment from "./AddShipment";
 import LandingPage from "./LandingPage";
-import ForgotPassword from "./ForgotPassword"; // Import the ForgotPassword component
+// import ForgotPassword from "./ForgotPassword"; // Import the ForgotPassword component
 import "leaflet/dist/leaflet.css";
 
 function PrivateRoute({ children }) {
@@ -380,7 +380,7 @@ function App() {
         <Route path="/add_shipment" element={<PrivateRoute><AddShipment /></PrivateRoute>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Added ForgotPassword route */}
+        {/* <Route path="/forgot-password" element={<ForgotPassword />} /> Added ForgotPassword route */}
       </Routes>
     </Router>
   );
