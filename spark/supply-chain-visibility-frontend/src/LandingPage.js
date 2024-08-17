@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LandingPage.css'; // Import the CSS file
 import backgroundVideo from './back.mp4'; // Import the video file

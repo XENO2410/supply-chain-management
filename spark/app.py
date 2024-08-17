@@ -9,10 +9,9 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-import pickle
 
 app = Flask(__name__, static_folder='supply-chain-visibility-frontend/build')
-app.secret_key = 'a_random_string_with_numbers_1234567890_and_symbols_!@#$%^&*()'
+app.secret_key = os.environ.get('SECRET_KEY', 'a_random_string_with_numbers_1234567890_and_symbols_!@#$%^&*()')
 CORS(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
