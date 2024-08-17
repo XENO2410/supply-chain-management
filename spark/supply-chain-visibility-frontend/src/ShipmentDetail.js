@@ -79,18 +79,23 @@ function ShipmentDetail() {
   };
 
   const handleSaveChanges = () => {
-    fetch(`http://127.0.0.1:5000/api/shipments/${id}`, {
+    fetch(`https://wmsparktrack.onrender.com/api/shipments/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
     })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to update shipment');
+        }
+        return response.json();
+      })
       .then(data => {
         setShipment(data);
         setEditMode(false);
-        navigate('/');  // Navigate back to the main page after saving
+        navigate('/home');  // Navigate back to the home page after saving
       })
       .catch(error => console.error('Update error:', error));
   };
