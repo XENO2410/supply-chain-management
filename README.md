@@ -1,6 +1,3 @@
-Certainly! Below is the entire content formatted in a single block of code, making it easy for you to copy and paste:
-
-markdown
 # Supply Chain Visibility
 
 [![Vercel](https://img.shields.io/badge/frontend-Vercel-brightgreen)](https://wmsparktrack.vercel.app/)
