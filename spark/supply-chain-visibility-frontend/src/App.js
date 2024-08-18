@@ -10,7 +10,6 @@ import ETAPrediction from "./ETAPrediction";
 import AnalyticsDashboard from "./AnalyticsDashboard";
 import AddShipment from "./AddShipment";
 import LandingPage from "./LandingPage";
-// import ForgotPassword from "./ForgotPassword"; // Import the ForgotPassword component
 import "leaflet/dist/leaflet.css";
 
 function PrivateRoute({ children }) {
