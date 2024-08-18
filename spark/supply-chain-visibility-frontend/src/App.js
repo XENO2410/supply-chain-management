@@ -379,7 +379,7 @@ function App() {
         <Route path="/add_shipment" element={<PrivateRoute><AddShipment /></PrivateRoute>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        {/* <Route path="/forgot-password" element={<ForgotPassword />} /> Added ForgotPassword route */}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </Router>
   );

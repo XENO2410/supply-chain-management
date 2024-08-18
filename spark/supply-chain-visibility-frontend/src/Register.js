@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Container, Form, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Container, Form, Button, Row, Col } from "react-bootstrap";
+import { useNavigate, Link } from "react-router-dom";
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -16,7 +16,7 @@ function Register() {
       return;
     }
 
-    const response = await fetch("http://127.0.0.1:5000/register", {
+    const response = await fetch("https://wmsparktrack.onrender.com/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,47 +32,56 @@ function Register() {
   };
 
   return (
-    <Container>
-      <h2 className="mt-4">Register</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formUsername">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </Form.Group>
+    <Container className="mt-5">
+      <Row className="justify-content-center">
+        <Col md={6}>
+          <h2 className="text-center">Register</h2>
+          {error && <p className="text-danger text-center">{error}</p>}
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formUsername">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </Form.Group>
 
-        <Form.Group controlId="formPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+            <Form.Group controlId="formPassword" className="mt-3">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </Form.Group>
 
-        <Form.Group controlId="formConfirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+            <Form.Group controlId="formConfirmPassword" className="mt-3">
+              <Form.Label>Confirm Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+            </Form.Group>
 
-        <Button variant="primary" type="submit" className="mt-3">
-          Register
-        </Button>
-      </Form>
+            <Button variant="primary" type="submit" className="mt-4 w-100">
+              Register
+            </Button>
+          </Form>
+          <Row className="mt-3">
+            <Col className="text-center">
+              <Link to="/login">Already have an account? Login here</Link>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     </Container>
   );
 }

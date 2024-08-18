@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, session, redirect, url_for, send_from_directory
+from flask import Flask, jsonify, request, redirect, url_for, send_from_directory
 import os
 import sqlite3
 from flask_cors import CORS
@@ -73,6 +73,13 @@ def login():
         login_user(User(user[0], user[1]))
         return jsonify({"message": "Login successful"}), 200
     return jsonify({"error": "Invalid username or password"}), 401
+
+@app.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    email = request.json.get('email')
+    # Here, you would normally implement sending a password reset email.
+    # For now, we'll just simulate the behavior.
+    return jsonify({"message": "If your email is registered, you will receive a password reset link."}), 200
 
 @app.route('/logout', methods=['GET'])
 @login_required
