@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, redirect, url_for, send_from_directory
+from flask import Flask, jsonify, request, redirect, url_for, send_from_directory, Response, send_file
 import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -11,6 +11,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import pickle
+import io
 
 app = Flask(__name__, static_folder='supply-chain-visibility-frontend/build')
 app.secret_key = 'a_random_string_with_numbers_1234567890_and_symbols_!@#$%^&*()'
@@ -25,7 +26,7 @@ def get_db_connection():
         host="aws-0-ap-south-1.pooler.supabase.com",
         database="postgres",
         user="postgres.mmnmntijjtvnuqrkbcof",
-        password="vva9cem4cc***",
+        password="JBFz2L?GPn%-_Xs",
         port="6543"
     )
     return conn
@@ -309,6 +310,60 @@ def get_analytics():
     }
 
     return jsonify(analytics_data)
+
+# Data Export Endpoint
+@app.route('/api/export_shipments', methods=['GET'])
+@login_required
+def export_shipments():
+    conn = get_db_connection()
+    df = pd.read_sql_query("SELECT * FROM shipments", conn)
+    conn.close()
+
+    export_format = request.args.get('format', 'csv')
+
+    if export_format == 'csv':
+        csv_data = df.to_csv(index=False)
+        return Response(
+            csv_data,
+            mimetype="text/csv",
+            headers={"Content-disposition": "attachment; filename=shipments.csv"}
+        )
+    elif export_format == 'excel':
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Shipments')
+        output.seek(0)
+        return send_file(
+            output,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='shipments.xlsx'
+        )
+    else:
+        return jsonify({"error": "Unsupported format"}), 400
+
+# Reporting Endpoint
+@app.route('/api/report', methods=['GET'])
+@login_required
+def generate_report():
+    conn = get_db_connection()
+    df = pd.read_sql_query("SELECT * FROM shipments", conn)
+    conn.close()
+
+    status_summary = df['status'].value_counts().to_frame().reset_index()
+    status_summary.columns = ['Status', 'Count']
+
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        status_summary.to_excel(writer, index=False, sheet_name='Status Summary')
+    output.seek(0)
+
+    return send_file(
+        output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True,
+        download_name='shipment_report.xlsx'
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)
