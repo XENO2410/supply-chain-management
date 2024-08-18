@@ -1,4 +1,4 @@
-# Supply Chain Visibility
+# WMSparkTrack
 
 [![Vercel](https://img.shields.io/badge/frontend-Vercel-brightgreen)](https://wmsparktrack.vercel.app/)
 [![Render](https://img.shields.io/badge/backend-Render-blue)](https://wmsparktrack.onrender.com/)
@@ -40,8 +40,8 @@ A web application that provides real-time visibility into the supply chain, allo
 
 ### Backend:
 - **Flask** (Python web framework)
-- **Flask-JWT-Extended** (for JWT-based authentication)
-- **SQLite** (database)
+- **Flask-Login** (for session management and user authentication)
+- **PostgreSQL** (database, hosted on Supabase)
 - **Scikit-learn** (for ETA prediction model)
 - **Render** (for deployment)
 
@@ -82,14 +82,23 @@ A web application that provides real-time visibility into the supply chain, allo
    pip install -r requirements.txt
    ```
 
-4. Initialize the database:
+4. Set up your database environment variables. In the `.env` file, ensure you have the following variables set:
+   ```bash
+   DATABASE_HOST=<your_database_host>
+   DATABASE_NAME=<your_database_name>
+   DATABASE_USER=<your_database_user>
+   DATABASE_PASSWORD=<your_database_password>
+   DATABASE_PORT=<your_database_port>
+   ```
+
+5. Initialize the database:
    ```bash
    python init_db.py
    ```
 
-5. Run the application:
+6. Run the application:
    ```bash
-   python app.py
+   gunicorn app:app  # For production
    ```
 
 ## API Endpoints
@@ -97,7 +106,7 @@ A web application that provides real-time visibility into the supply chain, allo
 ### Authentication
 
 - **POST** `/register` - Register a new user.
-- **POST** `/login` - Authenticate and get a JWT token.
+- **POST** `/login` - Authenticate and start a user session.
 
 ### Shipments
 
@@ -117,3 +126,9 @@ A web application that provides real-time visibility into the supply chain, allo
 ## Contributing
 
 Contributions are welcome! Please fork this repository and submit a pull request for any feature you would like to add or improve.
+
+### Key Updates:
+
+- Updated the backend technology stack to reflect the use of PostgreSQL hosted on Supabase instead of SQLite.
+- Included instructions for setting up environment variables necessary for connecting to the PostgreSQL database.
+- Adjusted the backend setup instructions to use `gunicorn` for running the application in production, which is a more suitable choice for deployment environments like Render.
