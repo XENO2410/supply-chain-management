@@ -43,7 +43,7 @@ function AddShipment() {
 
   return (
     <Container className="add-shipment-container">
-      <h2 className="mt-4">Add New Shipment</h2>
+      <h2 className="add-shipment-title">Add New Shipment</h2>
       <Form onSubmit={handleSubmit}>
         <Row>
           <Col md={6}>
@@ -54,7 +54,9 @@ function AddShipment() {
                 name="shipment_id"
                 value={shipment.shipment_id}
                 onChange={handleChange}
+                placeholder="Enter Shipment ID"
                 required
+                className="shipment-input"
               />
             </Form.Group>
           </Col>
@@ -66,7 +68,9 @@ function AddShipment() {
                 name="origin"
                 value={shipment.origin}
                 onChange={handleChange}
+                placeholder="Enter Origin"
                 required
+                className="shipment-input"
               />
             </Form.Group>
           </Col>
@@ -81,7 +85,9 @@ function AddShipment() {
                 name="destination"
                 value={shipment.destination}
                 onChange={handleChange}
+                placeholder="Enter Destination"
                 required
+                className="shipment-input"
               />
             </Form.Group>
           </Col>
@@ -93,6 +99,8 @@ function AddShipment() {
                 name="current_location"
                 value={shipment.current_location}
                 onChange={handleChange}
+                placeholder="Enter Current Location"
+                className="shipment-input"
               />
             </Form.Group>
           </Col>
@@ -107,7 +115,9 @@ function AddShipment() {
                 name="status"
                 value={shipment.status}
                 onChange={handleChange}
+                placeholder="Enter Status"
                 required
+                className="shipment-input"
               />
             </Form.Group>
           </Col>
@@ -119,20 +129,23 @@ function AddShipment() {
                 name="eta"
                 value={shipment.eta}
                 onChange={handleChange}
+                className="shipment-input"
               />
             </Form.Group>
           </Col>
         </Row>
 
-        <Button variant="primary" type="submit" className="mt-3">
-          Add Shipment
-        </Button>
-
-        <Link to="/home">
-          <Button variant="secondary" className="mt-3 ml-3">
-            Back to Home
+        <div className="shipment-buttons">
+          <Button variant="primary" type="submit" className="shipment-button">
+            Add Shipment
           </Button>
-        </Link>
+
+          <Link to="/home">
+            <Button variant="secondary" className="shipment-button">
+              Back to Home
+            </Button>
+          </Link>
+        </div>
       </Form>
     </Container>
   );

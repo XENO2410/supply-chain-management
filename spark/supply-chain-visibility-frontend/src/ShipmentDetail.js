@@ -140,7 +140,7 @@ function ShipmentDetail() {
   return (
     <Container className="shipment-detail-container">
       <div className="details-section">
-        <h1 className="shipment-detail-title">Shipment Details</h1>
+         <h1 className="shipment-detail-main-title">Shipment Details</h1>
         {editMode ? (
           <Form className="shipment-form">
             <Form.Group>
@@ -228,7 +228,7 @@ function ShipmentDetail() {
       </div>
 
       <div className="map-section">
-        <MapContainer center={currentLocationCoordinates} zoom={5} style={{ height: "400px", width: "100%" }}>
+      <MapContainer center={currentLocationCoordinates} zoom={5} style={{ height: "400px", width: "100%", borderRadius: "15px", marginTop: "50px" }}>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"

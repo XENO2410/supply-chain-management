@@ -37,6 +37,7 @@
   padding: 10px 25px;
   margin-top: 10px;
   margin-right: 10px;
+  border-radius: 25px;
 }
 
 .btn-save {
@@ -68,8 +69,8 @@
 
 .shipment-progress-bar {
   height: 30px;
-  background-color: #e9ecef;
-  border-radius: 8px;
+  background-color: #00ff04;
+  border-radius: 20px;
 }
 
 body {
@@ -93,6 +94,7 @@ body {
 .map-section {
   flex: 1.5;
   height: 100%;
+  border-radius: 10px;
 }
 
 .shipment-form {
@@ -110,4 +112,23 @@ body {
 .btn-back {
   margin-top: 20px;
   margin-left: 10px;
+}
+
+.shipment-detail-main-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  position: relative;
+}
+
+.shipment-detail-main-title::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 4px;
+  background-color: #007bff;
+  margin: 10px auto 0;
+  border-radius: 2px;
 }

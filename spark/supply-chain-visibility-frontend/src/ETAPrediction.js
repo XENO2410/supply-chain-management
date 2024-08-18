@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Alert } from 'react-bootstrap';
+import { Form, Button, Container, Alert, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './ETAPrediction.css'; // Import the custom CSS file
 
@@ -75,9 +75,20 @@ const ETAPrediction = () => {
                     />
                 </Form.Group>
 
-                <Button variant="primary" className="eta-button" onClick={predictETA}>
-                    Predict ETA
-                </Button>
+                <Row>
+                    <Col xs={6}>
+                        <Button variant="primary" className="eta-button" onClick={predictETA}>
+                            Predict ETA
+                        </Button>
+                    </Col>
+                    <Col xs={6}>
+                        <Link to="/home">
+                            <Button variant="secondary" className="eta-back-button">
+                                Back to Homepage
+                            </Button>
+                        </Link>
+                    </Col>
+                </Row>
             </Form>
 
             {predictedETA && (
@@ -86,12 +97,6 @@ const ETAPrediction = () => {
                     <p><strong>Predicted ETA Days:</strong> {predictedETA.predicted_eta_days.toFixed(2)}</p>
                 </Alert>
             )}
-
-            <Link to="/home">
-                <Button variant="secondary" className="eta-back-button">
-                    Back to Homepage
-                </Button>
-            </Link>
         </Container>
     );
 };

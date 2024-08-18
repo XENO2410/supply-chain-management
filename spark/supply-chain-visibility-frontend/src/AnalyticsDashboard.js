@@ -13,7 +13,7 @@ import {
   Cell,
 } from "recharts";
 import { Link } from "react-router-dom";
-import "./styles.css"; // Importing styles
+import "./AnalyticsDashboard.css"; // Renaming the CSS file to match the component name
 
 function AnalyticsDashboard() {
   const [analyticsData, setAnalyticsData] = useState({
@@ -25,11 +25,14 @@ function AnalyticsDashboard() {
   useEffect(() => {
     const fetchAnalyticsData = async () => {
       const token = localStorage.getItem("token");
-      const response = await fetch("https://wmsparktrack.onrender.com/api/analytics", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://wmsparktrack.onrender.com/api/analytics",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await response.json();
       setAnalyticsData(data);
     };
@@ -40,18 +43,20 @@ function AnalyticsDashboard() {
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   return (
-    <Container className="analytics-dashboard">
-      <h2 className="mt-4">Shipment Analytics Dashboard</h2>
+    <Container className="analytics-dashboard-container">
+      <h2 className="analytics-dashboard-title">Shipment Analytics Dashboard</h2>
 
-      <Link to="/home">
-        <Button variant="primary" className="mb-4">
-          Back to Main Page
-        </Button>
-      </Link>
+      <div className="dashboard-buttons">
+        <Link to="/home">
+          <Button variant="secondary" className="dashboard-back-button">
+            Back to Main Page
+          </Button>
+        </Link>
+      </div>
 
-      <Row className="mt-5">
-        <Col md={6}>
-          <h4>Average Delivery Time (Days)</h4>
+      <Row className="analytics-charts">
+        <Col md={6} className="chart-container">
+          <h4 className="chart-title">Average Delivery Time (Days)</h4>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={analyticsData.averageDeliveryTime}>
               <Line type="monotone" dataKey="days" stroke="#8884d8" />
@@ -62,8 +67,8 @@ function AnalyticsDashboard() {
             </LineChart>
           </ResponsiveContainer>
         </Col>
-        <Col md={6}>
-          <h4>Status Distribution</h4>
+        <Col md={6} className="chart-container">
+          <h4 className="chart-title">Status Distribution</h4>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie

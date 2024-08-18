@@ -1,61 +1,95 @@
 .eta-container {
-    margin-top: 50px;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 20px;
 }
 
 .eta-title {
     text-align: center;
     margin-bottom: 30px;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: #343a40;
+    font-weight: 600;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.eta-title::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #007bff;
+    margin-top: 10px;
+    border-radius: 2px;
+    position: absolute;
+    bottom: -10px;
 }
 
 .eta-input {
-    margin-bottom: 15px;
-    border-radius: 5px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+}
+
+.eta-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+}
+
+.eta-button, .eta-back-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+    margin-top: 10px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .eta-button {
-    width: 100%;
-    padding: 10px;
-    font-size: 1.2rem;
     background-color: #007bff;
     border-color: #007bff;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
-    margin-bottom: 20px;
 }
 
 .eta-button:hover {
     background-color: #0056b3;
     border-color: #004085;
-}
-
-.eta-result {
-    margin-top: 30px;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #e9f7ef;
-    border-color: #d4edda;
-    color: #155724;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.3);
 }
 
 .eta-back-button {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
     background-color: #6c757d;
     border-color: #6c757d;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.2);
 }
 
 .eta-back-button:hover {
     background-color: #5a6268;
     border-color: #545b62;
+    box-shadow: 0 6px 16px rgba(108, 117, 125, 0.3);
+}
+
+.eta-result {
+    margin-top: 15px;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #e9f7ef;
+    border-color: #d4edda;
+    color: #155724;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }

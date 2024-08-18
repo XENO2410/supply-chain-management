@@ -1,0 +1,39 @@
+/* App.css */
+
+.custom-navbar {
+    background-color: #ffffff;  /* Light background */
+    padding: 10px 20px;  /* Padding for better spacing */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  /* Add a subtle shadow */
+  }
+  
+  .custom-navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;  /* Dark text color for contrast */
+  }
+  
+  .custom-nav .nav-link {
+    color: #555;  /* Default link color */
+    font-size: 1rem;
+    margin-right: 15px;
+    transition: color 0.3s ease-in-out;  /* Smooth transition for hover effects */
+  }
+  
+  .custom-nav .nav-link:hover {
+    color: #007bff;  /* Change to primary color on hover */
+    text-decoration: none;  /* Remove underline on hover */
+  }
+  
+  .custom-nav .custom-nav-button {
+    margin-left: 15px;
+    border-radius: 25px;  /* Rounded corners */
+    padding: 5px 15px;
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .custom-nav .custom-nav-button:hover {
+    background-color: #0056b3;  /* Darker shade on hover */
+    color: white;
+  }
+  

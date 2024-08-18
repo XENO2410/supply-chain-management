@@ -1,47 +1,72 @@
 .add-shipment-container {
-    background-color: #f8f9fa;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .add-shipment-container h2 {
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .add-shipment-container .form-control {
-    border-radius: 5px;
-    border: 1px solid #ced4da;
-    padding: 10px;
-    font-size: 14px;
-  }
-  
-  .add-shipment-container .form-control:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
-  }
-  
-  .add-shipment-container .btn-primary {
-    background-color: #007bff;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-  }
-  
-  .add-shipment-container .btn-secondary {
-    background-color: #6c757d;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    margin-left: 10px;
-  }
-  
-  .add-shipment-container .btn-primary:hover,
-  .add-shipment-container .btn-secondary:hover {
-    opacity: 0.8;
-  }
-  
+  margin-top: 50px;
+  padding: 20px 40px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.add-shipment-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #343a40;
+  font-weight: 700;
+  position: relative;
+}
+
+.add-shipment-title::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 4px;
+  background-color: #007bff;
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+.shipment-input {
+  margin-bottom: 10px;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.shipment-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.shipment-button {
+  flex: 1;
+  margin: 0 5px;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.shipment-button:first-child {
+  margin-right: 10px;
+}
+
+.shipment-button:last-child {
+  margin-left: 10px;
+}
+
+.shipment-button:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+}
+
+.shipment-button:last-child:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+  box-shadow: 0 6px 12px rgba(108, 117, 125, 0.3);
+}

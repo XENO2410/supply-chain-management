@@ -1,0 +1,90 @@
+/* General Container Styling */
+.analytics-dashboard-container {
+    margin-top: 50px;
+    padding: 20px 40px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Title Styling */
+.analytics-dashboard-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #343a40;
+    font-weight: 700;
+    position: relative;
+}
+
+.analytics-dashboard-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background-color: #007bff;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* Chart Container Styling */
+.chart-container {
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Add margin between the two chart columns */
+.analytics-charts .col-md-6 {
+    margin-bottom: 20px; /* Adjust this value as needed */
+}
+
+/* Specific margin for larger screens to separate the charts */
+@media (min-width: 768px) {
+    .analytics-charts .col-md-6 {
+        margin-bottom: 0; /* Remove margin on larger screens */
+        padding-right: 15px;
+    }
+    .analytics-charts .col-md-6:first-child {
+        padding-right: 30px; /* Add extra space between the two charts */
+    }
+    .analytics-charts .col-md-6:last-child {
+        padding-left: 15px; /* Maintain padding on the right side of the last column */
+    }
+}
+
+/* Chart Title Styling */
+.chart-title {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: #343a40;
+    font-weight: 600;
+}
+
+/* Button Styling */
+.dashboard-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.dashboard-back-button {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-back-button:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+    box-shadow: 0 6px 12px rgba(108, 117, 125, 0.3);
+}

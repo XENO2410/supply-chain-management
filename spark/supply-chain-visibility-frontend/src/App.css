@@ -1,73 +1,110 @@
-/* General Styling */
-body {
-  background-color: #f4f4f9;
-  font-family: 'Arial', sans-serif;
+/* Ensure all text elements inherit the Roboto font */
+h1, h2, h3, h4, h5, h6,
+p, span, a, div, li, button, input, select, textarea {
+  font-family: 'Roboto', sans-serif !important;
 }
 
-/* Navbar Styling */
-.navbar {
-  background-color: #343a40;
-  border-bottom: 2px solid #1d2124;
+/* Button Styling for the Top Buttons */
+.top-buttons .btn-custom {
+  border-radius: 20px !important;
+  font-size: 1.1rem !important;
+  padding: 7px 20px !important;
+  text-align: center !important;
+  display: inline-block !important;
+  margin-left: 5px !important;
+  transition: all 0.3s ease !important;
 }
 
-.navbar-brand {
-  font-size: 1.5rem;
+.top-buttons .btn-custom.btn-info {
+  background-color: #0056B3 !important;
   color: #ffffff !important;
+  border: none !important;
 }
 
-/* Main Container */
-.container {
-  margin-top: 30px;
-  background-color: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ddd;
+.top-buttons .btn-custom.btn-success {
+  background-color: #28a798 !important;
+  color: #ffffff !important;
+  border: none !important;
 }
 
-/* Title Styling */
-h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 30px;
-  text-align: center;
+.top-buttons .btn-custom.btn-secondary {
+  background-color: #6c757d !important;
+  color: #ffffff !important;
+  border: none !important;
 }
 
-/* Search Bar Styling */
-.form-control {
-  border-radius: 8px;
+.top-buttons .btn-custom.btn-secondary:hover {
+  background-color: #5a6268 !important;
+}
+
+/* Add space below the "Show Filters" button */
+.show-filters-row {
+  margin-bottom: 10px !important; 
+}
+
+/* Alternative: add space directly to the button */
+.show-filters {
+  border-radius: 20px !important;
+  font-size: 1.1rem !important;
+  padding: 5px 20px !important;
+  text-align: center !important;
+  display: inline-block !important;
+  margin-left: 5px !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Add space between the table and the pagination */
+.table-container {
+  margin-bottom: 20px; /* Adjust this value to increase/decrease space */
+}
+
+/* Pagination container styling */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Add space above the pagination */
+  margin-bottom: 30px; /* Add space below the pagination */
+}
+
+/* Pagination Item Styling */
+.pagination-container .pagination-item {
+  font-size: 1.1rem;
   padding: 10px 15px;
-  font-size: 1.1rem;
-  margin-bottom: 20px;
-}
-
-/* Button Styling */
-button {
-  font-size: 1.1rem;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-}
-
-button.show-filters {
-  background-color: #6c757d;
+  margin: 0 5px;
+  border-radius: 25px;
+  background-color: #007bff;
   color: #ffffff;
-  margin-bottom: 20px;
+  border: none;
+  cursor: pointer;
 }
 
-button.show-filters:hover {
-  background-color: #5a6268;
+.pagination-container .pagination-item.active {
+  background-color: #0056b3;
+}
+
+.pagination-container .pagination-item:hover {
+  background-color: #0056b3;
+}
+
+/* Table Container Styling */
+.table-container {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-top: 20px;
 }
 
 /* Table Styling */
-table {
+.table-container table {
   width: 100%;
   border-collapse: collapse;
   background-color: #f9f9f9;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-table thead th {
+.table-container table thead th {
   background-color: #343a40;
   color: #ffffff;
   font-weight: bold;
@@ -75,68 +112,42 @@ table thead th {
   text-align: left;
 }
 
-table tbody td {
-  padding: 15px;
+.table-container table tbody td {
+  padding: 10px;
   border-bottom: 1px solid #dddddd;
 }
 
-table tbody tr:nth-child(even) {
+.table-container table tbody tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-table tbody tr:hover {
+.table-container table tbody tr:hover {
   background-color: #e6e6e6;
 }
 
-/* Pagination Styling */
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+/* Styling for the search input */
+.search-input {
+  border-radius: 20px; /* Rounded corners */
+  padding: 5px 20px; /* Padding inside the input */
+  font-size: 1.1rem; /* Font size */
+  border: 1px solid #ced4da; /* Border color */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for focus state */
 }
 
-.pagination-item {
-  font-size: 1.1rem;
-  padding: 10px 15px;
-  margin: 0 5px;
-  border-radius: 8px;
-  background-color: #007bff;
-  color: #ffffff;
-  border: none;
+.search-input:focus {
+  border-color: #80bdff; /* Border color on focus */
+  outline: none; /* Remove default outline */
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Blue shadow on focus */
 }
 
-.pagination-item.active {
-  background-color: #0056b3;
+.search-input::placeholder {
+  color: #6c757d; /* Placeholder text color */
+  opacity: 1; /* Ensure placeholder is fully visible */
 }
 
-.pagination-item:hover {
-  background-color: #0056b3;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .container {
-    padding: 20px;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-
-  .form-control {
-    font-size: 1rem;
-  }
-
-  button {
-    font-size: 1rem;
-  }
-
-  table thead th, table tbody td {
-    padding: 10px;
-  }
-
-  .pagination-item {
-    font-size: 1rem;
-    padding: 8px 12px;
-  }
+.heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
