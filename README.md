@@ -127,11 +127,6 @@ A web application that provides real-time visibility into the supply chain, allo
 
 Contributions are welcome! Please fork this repository and submit a pull request for any feature you would like to add or improve.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
-
 ### Key Updates:
 
 - Updated the backend technology stack to reflect the use of PostgreSQL hosted on Supabase instead of SQLite.
