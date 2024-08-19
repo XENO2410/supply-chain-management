@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Form, Button, ProgressBar } from 'react-bootstrap';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './ShipmentDetail.css';
@@ -28,6 +28,28 @@ const truckIcon = L.icon({
   iconAnchor: [19, 19],
 });
 
+// Function to get coordinates from location
+const getCoordinatesFromLocation = async (location) => {
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
+  );
+  const data = await response.json();
+
+  if (data && data.length > 0) {
+    return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+  } else {
+    console.error(`Location not found: ${location}`);
+    return [0, 0]; // Default to (0, 0) if location is not found
+  }
+};
+
+// Component to set map bounds
+const SetMapBounds = ({ bounds }) => {
+  const map = useMap();
+  map.fitBounds(bounds);
+  return null;
+};
+
 function ShipmentDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -46,10 +68,13 @@ function ShipmentDetail() {
     customer_address: '',
   });
 
-  const [truckPosition, setTruckPosition] = useState([40.7128, -74.0060]); // Start at origin
-  const originCoordinates = [40.7128, -74.0060]; // New York
-  const destinationCoordinates = [34.0522, -118.2437]; // Los Angeles
-  const currentLocationCoordinates = [41.8781, -87.6298]; // Chicago
+  const [positions, setPositions] = useState({
+    origin: [0, 0],
+    current: [0, 0],
+    destination: [0, 0],
+  });
+
+  const [truckPosition, setTruckPosition] = useState([0, 0]);
 
   useEffect(() => {
     fetch(`https://wmsparktrack.onrender.com/api/shipments/${id}`)
@@ -59,8 +84,12 @@ function ShipmentDetail() {
         }
         return response.json();
       })
-      .then(data => {
+      .then(async (data) => {
         setShipment(data);
+        const originCoordinates = await getCoordinatesFromLocation(data.origin);
+        const currentLocationCoordinates = await getCoordinatesFromLocation(data.current_location);
+        const destinationCoordinates = await getCoordinatesFromLocation(data.destination);
+
         setFormData({
           shipment_id: data.shipment_id || '',
           origin: data.origin || '',
@@ -73,6 +102,13 @@ function ShipmentDetail() {
           customer_phone: data.customer_phone || 'N/A',
           customer_address: data.customer_address || 'N/A',
         });
+
+        setPositions({
+          origin: originCoordinates,
+          current: currentLocationCoordinates,
+          destination: destinationCoordinates,
+        });
+
         animateTruck(originCoordinates, currentLocationCoordinates);
       })
       .catch(error => console.error('Fetch error:', error));
@@ -191,22 +227,27 @@ function ShipmentDetail() {
         )}
       </div>
       <div className="map-section">
-        <MapContainer center={currentLocationCoordinates} zoom={5} style={{ height: "400px", width: "100%", borderRadius: "15px", marginTop: "50px" }}>
+        <MapContainer
+          bounds={[positions.origin, positions.current, positions.destination]}
+          zoom={5}
+          style={{ height: "600px", width: "100%", borderRadius: "15px", marginTop: "50px" }}
+        >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
           />
-          <Marker position={originCoordinates} icon={originIcon}>
+          <Marker position={positions.origin} icon={originIcon}>
             <Popup>Origin: {shipment.origin}</Popup>
           </Marker>
-          <Marker position={destinationCoordinates} icon={destinationIcon}>
+          <Marker position={positions.destination} icon={destinationIcon}>
             <Popup>Destination: {shipment.destination}</Popup>
           </Marker>
           <Marker position={truckPosition} icon={truckIcon}>
             <Popup>Current Location: {shipment.current_location}</Popup>
           </Marker>
-          <Polyline positions={[originCoordinates, currentLocationCoordinates]} pathOptions={{ color: 'blue' }} />
-          <Polyline positions={[currentLocationCoordinates, destinationCoordinates]} pathOptions={{ color: 'blue', dashArray: '5, 10' }} />
+          <Polyline positions={[positions.origin, truckPosition]} pathOptions={{ color: 'blue' }} />
+          <Polyline positions={[truckPosition, positions.destination]} pathOptions={{ color: 'blue', dashArray: '5, 10' }} />
+          <SetMapBounds bounds={[positions.origin, positions.current, positions.destination]} />
         </MapContainer>
       </div>
     </Container>

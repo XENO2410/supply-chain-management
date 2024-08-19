@@ -1,6 +1,6 @@
+/* Container */
 .shipment-detail-container {
   display: flex;
-  justify-content: space-between;
   max-width: 1200px;
   margin: 40px auto;
   padding: 20px;
@@ -8,36 +8,76 @@
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid #ddd;
+  flex-wrap: wrap;
 }
 
-.shipment-detail-title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #333;
-  width: 100%;
-}
-
+/* Left Section: Details */
 .details-section {
   flex: 1;
   padding-right: 20px;
 }
 
+.details-box {
+  padding-bottom: 20px;
+}
+
+.details-box p {
+  margin: 10px 0;
+}
+
+/* Right Section: Map */
 .map-section {
-  flex: 1.5;
+  flex: 1;
+  padding-left: 20px;
 }
 
-.shipment-form .form-group {
+/* Titles */
+.shipment-detail-main-title {
+  text-align: center;
   margin-bottom: 20px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  position: relative;
 }
 
-.btn-save, .btn-cancel, .btn-edit, .btn-back {
+.shipment-detail-main-title::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 4px;
+  background-color: #007bff;
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+.customer-detail-title,
+.shipment-progress-title {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-size: 1.7rem;
+  color: #333;
+}
+
+/* Progress Bar */
+.shipment-progress-bar {
+  height: 30px;
+  background-color: #00ff04;
+  border-radius: 20px;
+  margin-top: 20px;
+}
+
+/* Buttons */
+.btn-save,
+.btn-cancel,
+.btn-edit,
+.btn-back {
   font-size: 1.1rem;
   padding: 10px 25px;
-  margin-top: 10px;
+  margin-top: 20px;
   margin-right: 10px;
   border-radius: 25px;
+  display: inline-block;
 }
 
 .btn-save {
@@ -60,75 +100,27 @@
   border-color: #6c757d;
 }
 
-.shipment-progress-title, .customer-detail-title {
-  margin-top: 50px;
+/* Layout Enhancements */
+.details-section, .map-section {
   margin-bottom: 20px;
-  font-size: 1.7rem;
-  color: #333;
-}
-
-.shipment-progress-bar {
-  height: 30px;
-  background-color: #00ff04;
-  border-radius: 20px;
 }
 
 body {
   background-color: #f4f4f9;
 }
 
-.shipment-detail-container {
-  padding: 20px;
+@media (max-width: 768px) {
+  .shipment-detail-container {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .details-section, .map-section {
+    padding: 0;
+  }
+
+  .map-section {
+    margin-top: 20px;
+  }
 }
 
-.shipment-detail-title {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.details-section {
-  flex: 1;
-  padding-right: 20px;
-}
-
-.map-section {
-  flex: 1.5;
-  height: 100%;
-  border-radius: 10px;
-}
-
-.shipment-form {
-  margin-bottom: 20px;
-}
-
-.shipment-progress-bar {
-  margin-top: 15px;
-}
-
-.btn-edit {
-  margin-top: 20px;
-}
-
-.btn-back {
-  margin-top: 20px;
-  margin-left: 10px;
-}
-
-.shipment-detail-main-title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #333;
-  position: relative;
-}
-
-.shipment-detail-main-title::after {
-  content: '';
-  display: block;
-  width: 100px;
-  height: 4px;
-  background-color: #007bff;
-  margin: 10px auto 0;
-  border-radius: 2px;
-}
