@@ -60,7 +60,7 @@
   border-color: #6c757d;
 }
 
-.shipment-progress-title {
+.shipment-progress-title, .customer-detail-title {
   margin-top: 50px;
   margin-bottom: 20px;
   font-size: 1.7rem;

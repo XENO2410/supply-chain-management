@@ -40,6 +40,10 @@ function ShipmentDetail() {
     current_location: '',
     status: '',
     eta: '',
+    customer_name: '',
+    customer_email: '',
+    customer_phone: '',
+    customer_address: '',
   });
 
   const [truckPosition, setTruckPosition] = useState([40.7128, -74.0060]); // Start at origin
@@ -64,6 +68,10 @@ function ShipmentDetail() {
           current_location: data.current_location,
           status: data.status,
           eta: data.eta,
+          customer_name: data.customer_name,
+          customer_email: data.customer_email,
+          customer_phone: data.customer_phone,
+          customer_address: data.customer_address,
         });
         animateTruck(originCoordinates, currentLocationCoordinates);
       })
@@ -218,6 +226,42 @@ function ShipmentDetail() {
                 onChange={handleInputChange}
               />
             </Form.Group>
+            <Form.Group>
+              <Form.Label>Customer Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="customer_name"
+                value={formData.customer_name}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Customer Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="customer_email"
+                value={formData.customer_email}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Customer Phone</Form.Label>
+              <Form.Control
+                type="text"
+                name="customer_phone"
+                value={formData.customer_phone}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Customer Address</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="customer_address"
+                value={formData.customer_address}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
             <Button variant="primary" onClick={handleSaveChanges} className="btn-save">
               Save Changes
             </Button>
@@ -234,6 +278,11 @@ function ShipmentDetail() {
             <p><strong>Current Location:</strong> {shipment.current_location}</p>
             <p><strong>Status:</strong> {shipment.status}</p>
             <p><strong>ETA:</strong> {shipment.eta}</p>
+            <h3 className="customer-detail-title">Customer Details</h3>
+            <p><strong>Name:</strong> {shipment.customer_name}</p>
+            <p><strong>Email:</strong> {shipment.customer_email}</p>
+            <p><strong>Phone:</strong> {shipment.customer_phone}</p>
+            <p><strong>Address:</strong> {shipment.customer_address}</p>
             
             <h3 className="shipment-progress-title">Shipment Progress</h3>
             <ProgressBar now={getProgress()} label={`${getProgress()}%`} className="shipment-progress-bar" />
