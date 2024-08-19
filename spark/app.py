@@ -137,7 +137,7 @@ def get_shipment(shipment_id):
     cursor.execute("""
         SELECT s.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone, c.address as customer_address
         FROM shipments s
-        LEFT JOIN customers c ON s.id = c.shipment_id
+        LEFT JOIN customers c ON s.id::varchar = c.shipment_id
         WHERE s.id = %s
     """, (shipment_id,))
     shipment = cursor.fetchone()
@@ -180,7 +180,7 @@ def add_shipment():
             customer.get('email', ''),
             customer.get('phone', ''),
             customer.get('address', ''),
-            shipment_id
+            new_shipment['shipment_id']  # Note: Use new_shipment['shipment_id'] instead of shipment_id
         ))
 
     conn.commit()
