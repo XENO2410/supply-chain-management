@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Table, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import {
   LineChart,
   Line,
@@ -18,11 +18,12 @@ import { Link } from "react-router-dom";
 import "./AnalyticsDashboard.css";
 
 function AnalyticsDashboard() {
-  const [analyticsData, setAnalyticsData] = useState(null); // Use null to distinguish between no data and still loading
+  const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    let isMounted = true; // Track if the component is still mounted
+    let isMounted = true;
     const fetchAnalyticsData = async () => {
       setLoading(true);
       const token = localStorage.getItem("token");
@@ -35,21 +36,27 @@ function AnalyticsDashboard() {
             },
           }
         );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
         const data = await response.json();
         if (isMounted) {
           setAnalyticsData(data);
-          setLoading(false); // Only set loading to false once all data is fetched
+          setLoading(false);
         }
       } catch (error) {
         console.error("Error fetching analytics data:", error);
-        if (isMounted) setLoading(false);
+        if (isMounted) {
+          setError(error.message);
+          setLoading(false);
+        }
       }
     };
 
     fetchAnalyticsData();
 
     return () => {
-      isMounted = false; // Cleanup function to prevent state updates if unmounted
+      isMounted = false;
     };
   }, []);
 
@@ -66,7 +73,19 @@ function AnalyticsDashboard() {
     );
   }
 
-  if (!analyticsData) {
+  if (error) {
+    return (
+      <Container className="analytics-dashboard-container">
+        <h2 className="analytics-dashboard-title">Shipment Analytics Dashboard</h2>
+        <Alert variant="danger">{error}</Alert>
+      </Container>
+    );
+  }
+
+  if (!analyticsData || 
+      (!analyticsData.statusDistribution.length &&
+       !analyticsData.delayedShipmentsCount.length &&
+       !analyticsData.averageDeliveryTime.length)) {
     return (
       <Container className="analytics-dashboard-container">
         <h2 className="analytics-dashboard-title">Shipment Analytics Dashboard</h2>
@@ -76,8 +95,8 @@ function AnalyticsDashboard() {
   }
 
   const {
-    shipmentStatusCounts,
-    shipmentHistoryOverTime,
+    statusDistribution,
+    delayedShipmentsCount,
     averageDeliveryTime,
   } = analyticsData;
 
@@ -96,11 +115,11 @@ function AnalyticsDashboard() {
       <Row className="analytics-charts">
         <Col md={6} className="chart-container">
           <h4 className="chart-title">Shipments by Status</h4>
-          {shipmentStatusCounts && shipmentStatusCounts.length > 0 ? (
+          {statusDistribution && statusDistribution.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={shipmentStatusCounts}
+                  data={statusDistribution}
                   dataKey="value"
                   nameKey="status"
                   cx="50%"
@@ -108,7 +127,7 @@ function AnalyticsDashboard() {
                   outerRadius={120}
                   fill="#8884d8"
                 >
-                  {shipmentStatusCounts.map((entry, index) => (
+                  {statusDistribution.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}
@@ -124,10 +143,10 @@ function AnalyticsDashboard() {
         </Col>
 
         <Col md={6} className="chart-container">
-          <h4 className="chart-title">Shipment Updates Over Time</h4>
-          {shipmentHistoryOverTime && shipmentHistoryOverTime.length > 0 ? (
+          <h4 className="chart-title">Delayed Shipments Over Time</h4>
+          {delayedShipmentsCount && delayedShipmentsCount.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={shipmentHistoryOverTime}>
+              <LineChart data={delayedShipmentsCount}>
                 <Line type="monotone" dataKey="count" stroke="#8884d8" />
                 <CartesianGrid stroke="#ccc" />
                 <XAxis dataKey="date" />

@@ -299,7 +299,13 @@ def predict_eta():
         current_location_encoded = encode_label(label_encoder, current_location)
         status_encoded = encode_label(label_encoder, status)
 
-        features = np.array([[origin_encoded, destination_encoded, current_location_encoded, status_encoded]])
+        # Create a DataFrame with feature names matching those used during training
+        feature_names = ['origin_encoded', 'destination_encoded', 'current_location_encoded', 'status_encoded']
+        features = pd.DataFrame([[origin_encoded, destination_encoded, current_location_encoded, status_encoded]], columns=feature_names)
+
+        # Ensure the model's feature names match the input DataFrame columns
+        features = features[model.feature_names_in_]
+
         predicted_days = model.predict(features)[0]
 
         return jsonify({
