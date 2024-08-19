@@ -151,3 +151,24 @@ p, span, a, div, li, button, input, select, textarea {
   font-weight: bold;
   margin-bottom: 10px;
 }
+
+/* New Button Styles for Export and Report */
+.top-buttons .btn-custom.btn-primary {
+  background-color: #007bff !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.top-buttons .btn-custom.btn-warning {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+  border: none !important;
+}
+
+.top-buttons .btn-custom.btn-primary:hover {
+  background-color: #0056b3 !important;
+}
+
+.top-buttons .btn-custom.btn-warning:hover {
+  background-color: #e0a800 !important;
+}

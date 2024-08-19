@@ -122,8 +122,14 @@ function ShipmentDetail() {
 
   const getProgress = () => {
     switch (shipment?.status) {
-      case 'Order Placed':
-        return 25;
+      case 'Order Received':
+        return 10;
+      case 'Processing':
+        return 20;
+      case 'Ready for Pickup':
+        return 30;
+      case 'Picked Up':
+        return 40;
       case 'In Transit':
         return 50;
       case 'Out for Delivery':
@@ -182,11 +188,26 @@ function ShipmentDetail() {
             <Form.Group>
               <Form.Label>Status</Form.Label>
               <Form.Control
-                type="text"
+                as="select"
                 name="status"
                 value={formData.status}
                 onChange={handleInputChange}
-              />
+                required
+                className="shipment-input"
+              >
+                <option value="Order Received">Order Received</option>
+                <option value="Processing">Processing</option>
+                <option value="Ready for Pickup">Ready for Pickup</option>
+                <option value="Picked Up">Picked Up</option>
+                <option value="In Transit">In Transit</option>
+                <option value="Out for Delivery">Out for Delivery</option>
+                <option value="Delayed">Delayed</option>
+                <option value="At Customs">At Customs</option>
+                <option value="Failed Delivery Attempt">Failed Delivery Attempt</option>
+                <option value="Returned to Sender">Returned to Sender</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+              </Form.Control>
             </Form.Group>
             <Form.Group>
               <Form.Label>ETA</Form.Label>

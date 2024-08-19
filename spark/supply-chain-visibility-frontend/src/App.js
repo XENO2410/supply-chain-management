@@ -52,7 +52,7 @@ function App() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [openFilters, setOpenFilters] = useState(false);
-  const itemsPerPage = 8;
+  const itemsPerPage = 20;
 
   useEffect(() => {
     const fetchData = () => {

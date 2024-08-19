@@ -119,7 +119,11 @@ def serve_react_app(path):
 def get_shipments():
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
-    cursor.execute("SELECT * FROM shipments")
+    cursor.execute("""
+        SELECT s.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone, c.address as customer_address
+        FROM shipments s
+        LEFT JOIN customers c ON s.id = c.shipment_id
+    """)
     shipments = cursor.fetchall()
     conn.close()
 
@@ -129,7 +133,12 @@ def get_shipments():
 def get_shipment(shipment_id):
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
-    cursor.execute("SELECT * FROM shipments WHERE id = %s", (shipment_id,))
+    cursor.execute("""
+        SELECT s.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone, c.address as customer_address
+        FROM shipments s
+        LEFT JOIN customers c ON s.id = c.shipment_id
+        WHERE s.id = %s
+    """, (shipment_id,))
     shipment = cursor.fetchone()
     conn.close()
 
@@ -156,10 +165,27 @@ def add_shipment():
         new_shipment.get('eta', '')
     ))
 
+    shipment_id = cursor.lastrowid
+
+    # Add customer details if provided
+    if 'customer' in new_shipment:
+        customer = new_shipment['customer']
+        cursor.execute('''
+            INSERT INTO customers (customer_id, name, email, phone, address, shipment_id)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (
+            customer['customer_id'],
+            customer['name'],
+            customer.get('email', ''),
+            customer.get('phone', ''),
+            customer.get('address', ''),
+            shipment_id
+        ))
+
     conn.commit()
     conn.close()
 
-    return jsonify({"message": "Shipment added successfully"}), 201
+    return jsonify({"message": "Shipment and customer added successfully"}), 201
 
 @app.route('/api/shipments/<int:shipment_id>', methods=['PUT'])
 def update_shipment(shipment_id):
@@ -175,6 +201,17 @@ def update_shipment(shipment_id):
     new_status = request.json.get('status')
     new_location = request.json.get('current_location')
     new_eta = request.json.get('eta')
+
+    # Check for valid status
+    valid_statuses = [
+        'Order Received', 'Processing', 'Ready for Pickup', 'Picked Up', 
+        'In Transit', 'Out for Delivery', 'Delayed', 'At Customs', 
+        'Failed Delivery Attempt', 'Returned to Sender', 'Delivered', 
+        'Cancelled'
+    ]
+
+    if new_status not in valid_statuses:
+        return jsonify({"error": "Invalid status"}), 400
 
     cursor.execute('''
         UPDATE shipments SET status = %s, current_location = %s, eta = %s WHERE id = %s
@@ -207,6 +244,43 @@ def get_shipment_history(shipment_id):
     conn.close()
 
     return jsonify(history_entries)
+
+# Customer API endpoints
+@app.route('/api/customers', methods=['POST'])
+def add_customer():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    new_customer = request.json
+    cursor.execute('''
+        INSERT INTO customers (customer_id, name, email, phone, address, shipment_id)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    ''', (
+        new_customer['customer_id'],
+        new_customer['name'],
+        new_customer.get('email', ''),
+        new_customer.get('phone', ''),
+        new_customer.get('address', ''),
+        new_customer['shipment_id']
+    ))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Customer added successfully"}), 201
+
+@app.route('/api/customers/<int:customer_id>', methods=['GET'])
+def get_customer(customer_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor.execute("SELECT * FROM customers WHERE id = %s", (customer_id,))
+    customer = cursor.fetchone()
+    conn.close()
+
+    if customer:
+        return jsonify(customer)
+    else:
+        return jsonify({"error": "Customer not found"}), 404
 
 # ETA Prediction Endpoint
 @app.route('/api/predict_eta', methods=['POST'])
