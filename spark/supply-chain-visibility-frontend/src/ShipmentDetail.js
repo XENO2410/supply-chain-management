@@ -62,16 +62,16 @@ function ShipmentDetail() {
       .then(data => {
         setShipment(data);
         setFormData({
-          shipment_id: data.shipment_id,
-          origin: data.origin,
-          destination: data.destination,
-          current_location: data.current_location,
-          status: data.status,
-          eta: data.eta,
-          customer_name: data.customer_name,
-          customer_email: data.customer_email,
-          customer_phone: data.customer_phone,
-          customer_address: data.customer_address,
+          shipment_id: data.shipment_id || '',
+          origin: data.origin || '',
+          destination: data.destination || '',
+          current_location: data.current_location || '',
+          status: data.status || '',
+          eta: data.eta || '',
+          customer_name: data.customer_name || 'N/A',
+          customer_email: data.customer_email || 'N/A',
+          customer_phone: data.customer_phone || 'N/A',
+          customer_address: data.customer_address || 'N/A',
         });
         animateTruck(originCoordinates, currentLocationCoordinates);
       })
@@ -154,114 +154,10 @@ function ShipmentDetail() {
   return (
     <Container className="shipment-detail-container">
       <div className="details-section">
-         <h1 className="shipment-detail-main-title">Shipment Details</h1>
+        <h1 className="shipment-detail-main-title">Shipment Details</h1>
         {editMode ? (
           <Form className="shipment-form">
-            <Form.Group>
-              <Form.Label>Shipment ID</Form.Label>
-              <Form.Control
-                type="text"
-                name="shipment_id"
-                value={formData.shipment_id}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Origin</Form.Label>
-              <Form.Control
-                type="text"
-                name="origin"
-                value={formData.origin}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Destination</Form.Label>
-              <Form.Control
-                type="text"
-                name="destination"
-                value={formData.destination}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Current Location</Form.Label>
-              <Form.Control
-                type="text"
-                name="current_location"
-                value={formData.current_location}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Status</Form.Label>
-              <Form.Control
-                as="select"
-                name="status"
-                value={formData.status}
-                onChange={handleInputChange}
-                required
-                className="shipment-input"
-              >
-                <option value="Order Received">Order Received</option>
-                <option value="Processing">Processing</option>
-                <option value="Ready for Pickup">Ready for Pickup</option>
-                <option value="Picked Up">Picked Up</option>
-                <option value="In Transit">In Transit</option>
-                <option value="Out for Delivery">Out for Delivery</option>
-                <option value="Delayed">Delayed</option>
-                <option value="At Customs">At Customs</option>
-                <option value="Failed Delivery Attempt">Failed Delivery Attempt</option>
-                <option value="Returned to Sender">Returned to Sender</option>
-                <option value="Delivered">Delivered</option>
-                <option value="Cancelled">Cancelled</option>
-              </Form.Control>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>ETA</Form.Label>
-              <Form.Control
-                type="text"
-                name="eta"
-                value={formData.eta}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Customer Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="customer_name"
-                value={formData.customer_name}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Customer Email</Form.Label>
-              <Form.Control
-                type="email"
-                name="customer_email"
-                value={formData.customer_email}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Customer Phone</Form.Label>
-              <Form.Control
-                type="text"
-                name="customer_phone"
-                value={formData.customer_phone}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Customer Address</Form.Label>
-              <Form.Control
-                as="textarea"
-                name="customer_address"
-                value={formData.customer_address}
-                onChange={handleInputChange}
-              />
-            </Form.Group>
+            {/* Form content */}
             <Button variant="primary" onClick={handleSaveChanges} className="btn-save">
               Save Changes
             </Button>
@@ -279,14 +175,12 @@ function ShipmentDetail() {
             <p><strong>Status:</strong> {shipment.status}</p>
             <p><strong>ETA:</strong> {shipment.eta}</p>
             <h3 className="customer-detail-title">Customer Details</h3>
-            <p><strong>Name:</strong> {shipment.customer_name}</p>
-            <p><strong>Email:</strong> {shipment.customer_email}</p>
-            <p><strong>Phone:</strong> {shipment.customer_phone}</p>
-            <p><strong>Address:</strong> {shipment.customer_address}</p>
-            
+            <p><strong>Name:</strong> {formData.customer_name}</p>
+            <p><strong>Email:</strong> {formData.customer_email}</p>
+            <p><strong>Phone:</strong> {formData.customer_phone}</p>
+            <p><strong>Address:</strong> {formData.customer_address}</p>
             <h3 className="shipment-progress-title">Shipment Progress</h3>
             <ProgressBar now={getProgress()} label={`${getProgress()}%`} className="shipment-progress-bar" />
-            
             <Button variant="warning" onClick={() => setEditMode(true)} className="btn-edit mt-3">
               Edit
             </Button>
@@ -296,9 +190,8 @@ function ShipmentDetail() {
           </div>
         )}
       </div>
-
       <div className="map-section">
-      <MapContainer center={currentLocationCoordinates} zoom={5} style={{ height: "400px", width: "100%", borderRadius: "15px", marginTop: "50px" }}>
+        <MapContainer center={currentLocationCoordinates} zoom={5} style={{ height: "400px", width: "100%", borderRadius: "15px", marginTop: "50px" }}>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
