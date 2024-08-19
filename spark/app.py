@@ -15,7 +15,7 @@ import io
 
 app = Flask(__name__, static_folder='supply-chain-visibility-frontend/build')
 app.secret_key = 'a_random_string_with_numbers_1234567890_and_symbols_!@#$%^&*()'
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
