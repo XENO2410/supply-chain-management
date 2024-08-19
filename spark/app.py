@@ -133,26 +133,6 @@ def get_shipment(shipment_id):
     else:
         return jsonify({"error": "Shipment not found"}), 404
 
-
-
-@app.route('/api/shipments/<int:shipment_id>', methods=['GET'])
-def get_shipment(shipment_id):
-    conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
-    cursor.execute("""
-        SELECT s.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone, c.address as customer_address
-        FROM shipments s
-        LEFT JOIN customers c ON s.id::varchar = c.shipment_id
-        WHERE s.id = %s
-    """, (shipment_id,))
-    shipment = cursor.fetchone()
-    conn.close()
-
-    if shipment:
-        return jsonify(shipment)
-    else:
-        return jsonify({"error": "Shipment not found"}), 404
-
 @app.route('/api/shipments', methods=['POST'])
 def add_shipment():
     conn = get_db_connection()
@@ -171,8 +151,6 @@ def add_shipment():
         new_shipment.get('eta', '')
     ))
 
-    shipment_id = cursor.lastrowid
-
     # Add customer details if provided
     if 'customer' in new_shipment:
         customer = new_shipment['customer']
@@ -185,7 +163,7 @@ def add_shipment():
             customer.get('email', ''),
             customer.get('phone', ''),
             customer.get('address', ''),
-            new_shipment['shipment_id']  # Note: Use new_shipment['shipment_id'] instead of shipment_id
+            new_shipment['shipment_id']
         ))
 
     conn.commit()
