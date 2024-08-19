@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Table } from "react-bootstrap";
+import { Container, Row, Col, Button, Table, Spinner } from "react-bootstrap";
 import {
   LineChart,
   Line,
@@ -18,37 +18,66 @@ import { Link } from "react-router-dom";
 import "./AnalyticsDashboard.css";
 
 function AnalyticsDashboard() {
-  const [analyticsData, setAnalyticsData] = useState({
-    shipmentStatusCounts: [],
-    shipmentHistoryOverTime: [],
-    topCustomers: [],
-    averageDeliveryTime: [],
-  });
+  const [analyticsData, setAnalyticsData] = useState(null); // Use null to distinguish between no data and still loading
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true; // Track if the component is still mounted
     const fetchAnalyticsData = async () => {
+      setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        "https://wmsparktrack.onrender.com/api/analytics",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      try {
+        const response = await fetch(
+          "https://wmsparktrack.onrender.com/api/analytics",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+        if (isMounted) {
+          setAnalyticsData(data);
+          setLoading(false); // Only set loading to false once all data is fetched
         }
-      );
-      const data = await response.json();
-      setAnalyticsData(data);
+      } catch (error) {
+        console.error("Error fetching analytics data:", error);
+        if (isMounted) setLoading(false);
+      }
     };
 
     fetchAnalyticsData();
+
+    return () => {
+      isMounted = false; // Cleanup function to prevent state updates if unmounted
+    };
   }, []);
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
+  if (loading) {
+    return (
+      <Container className="analytics-dashboard-container">
+        <h2 className="analytics-dashboard-title">Shipment Analytics Dashboard</h2>
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      </Container>
+    );
+  }
+
+  if (!analyticsData) {
+    return (
+      <Container className="analytics-dashboard-container">
+        <h2 className="analytics-dashboard-title">Shipment Analytics Dashboard</h2>
+        <p>No data available</p>
+      </Container>
+    );
+  }
+
   const {
     shipmentStatusCounts,
     shipmentHistoryOverTime,
-    topCustomers,
     averageDeliveryTime,
   } = analyticsData;
 
@@ -72,7 +101,7 @@ function AnalyticsDashboard() {
               <PieChart>
                 <Pie
                   data={shipmentStatusCounts}
-                  dataKey="count"
+                  dataKey="value"
                   nameKey="status"
                   cx="50%"
                   cy="50%"
@@ -119,40 +148,12 @@ function AnalyticsDashboard() {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={averageDeliveryTime}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="shipment_id" />
+                <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
                 <Bar dataKey="days" fill="#8884d8" />
               </BarChart>
             </ResponsiveContainer>
-          ) : (
-            <p>No data available</p>
-          )}
-        </Col>
-
-        <Col md={6} className="chart-container">
-          <h4 className="chart-title">Top Customers by Shipments</h4>
-          {topCustomers && topCustomers.length > 0 ? (
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Customer ID</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Total Shipments</th>
-                </tr>
-              </thead>
-              <tbody>
-                {topCustomers.map((customer) => (
-                  <tr key={customer.customer_id}>
-                    <td>{customer.customer_id}</td>
-                    <td>{customer.name}</td>
-                    <td>{customer.email}</td>
-                    <td>{customer.totalShipments}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
           ) : (
             <p>No data available</p>
           )}

@@ -357,34 +357,54 @@ def get_analytics():
     shipments = cursor.fetchall()
     conn.close()
 
+    # Initialize data structures for storing analytics
     average_delivery_time = []
-    delayed_shipments_count = []
+    delayed_shipments_count = {}
     status_distribution = {}
+
+    # Current time for calculating delivery days
+    current_time = pd.Timestamp.now()
 
     for shipment in shipments:
         eta_date = pd.to_datetime(shipment['eta'])
-        delivery_days = (eta_date - pd.Timestamp.now()).days
+        delivery_days = (eta_date - current_time).days
 
+        # Only consider non-negative delivery days
         if delivery_days >= 0:
-            average_delivery_time.append({"date": eta_date.strftime('%Y-%m-%d'), "days": delivery_days})
+            average_delivery_time.append({
+                "date": eta_date.strftime('%Y-%m-%d'),
+                "days": delivery_days
+            })
 
+        # Count delayed shipments by date
         if shipment['status'].lower() == 'delayed':
-            delayed_shipments_count.append({"date": eta_date.strftime('%Y-%m-%d'), "count": 1})
+            date_key = eta_date.strftime('%Y-%m-%d')
+            if date_key in delayed_shipments_count:
+                delayed_shipments_count[date_key] += 1
+            else:
+                delayed_shipments_count[date_key] = 1
 
-        if shipment['status'] in status_distribution:
-            status_distribution[shipment['status']] += 1
+        # Count shipments by status
+        status_key = shipment['status']
+        if status_key in status_distribution:
+            status_distribution[status_key] += 1
         else:
-            status_distribution[shipment['status']] = 1
+            status_distribution[status_key] = 1
 
+    # Convert delayed_shipments_count to a list of dictionaries
+    delayed_shipments_list = [{"date": k, "count": v} for k, v in delayed_shipments_count.items()]
+
+    # Convert status_distribution to a list of dictionaries
     status_distribution_list = [{"status": k, "value": v} for k, v in status_distribution.items()]
 
     analytics_data = {
         "averageDeliveryTime": average_delivery_time,
-        "delayedShipmentsCount": delayed_shipments_count,
+        "delayedShipmentsCount": delayed_shipments_list,
         "statusDistribution": status_distribution_list,
     }
 
     return jsonify(analytics_data)
+
 
 # Data Export Endpoint
 @app.route('/api/export_shipments', methods=['GET'])
