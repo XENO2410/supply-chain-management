@@ -9,34 +9,22 @@ const ETAPrediction = () => {
     const [currentLocation, setCurrentLocation] = useState('Chicago');
     const [status, setStatus] = useState('In Transit');
     const [predictedETA, setPredictedETA] = useState(null);
-    const [error, setError] = useState(null);
 
     const predictETA = async () => {
-        setError(null); // Reset any existing errors
-        try {
-            const response = await fetch('https://wmsparktrack.onrender.com/api/predict_eta', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    origin,
-                    destination,
-                    current_location: currentLocation,
-                    status
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status} ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            setPredictedETA(data);
-        } catch (error) {
-            setError(error.message);
-            console.error("Error predicting ETA:", error);
-        }
+        const response = await fetch('https://wmsparktrack.onrender.com/api/predict_eta', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                origin,
+                destination,
+                current_location: currentLocation,
+                status
+            })
+        });
+        const data = await response.json();
+        setPredictedETA(data);
     };
 
     return (
@@ -102,12 +90,6 @@ const ETAPrediction = () => {
                     </Col>
                 </Row>
             </Form>
-
-            {error && (
-                <Alert variant="danger" className="eta-error">
-                    {error}
-                </Alert>
-            )}
 
             {predictedETA && (
                 <Alert variant="success" className="eta-result">
