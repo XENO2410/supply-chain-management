@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import './ETAPrediction.css'; // Import the custom CSS file
 
 const ETAPrediction = () => {
-    const [origin, setOrigin] = useState('New York');
-    const [destination, setDestination] = useState('Los Angeles');
-    const [currentLocation, setCurrentLocation] = useState('Chicago');
+    const [origin, setOrigin] = useState('Delhi');
+    const [destination, setDestination] = useState('Mumbai');
+    const [currentLocation, setCurrentLocation] = useState('Surat');
     const [status, setStatus] = useState('In Transit');
     const [predictedETA, setPredictedETA] = useState(null);
 

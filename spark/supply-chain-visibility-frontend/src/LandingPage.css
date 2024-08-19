@@ -60,7 +60,7 @@
   border: none;
   cursor: pointer;
   color: black;
-  border-radius: 5px;
+  border-radius: 25px;
 }
 
 .landing-button:hover {
