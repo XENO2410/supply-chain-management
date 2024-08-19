@@ -19,6 +19,7 @@ import {
   Routes,
   Link,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import ShipmentDetail from "./ShipmentDetail";
@@ -30,6 +31,7 @@ import AddShipment from "./AddShipment";
 import LandingPage from "./LandingPage";
 import ForgotPassword from "./ForgotPassword";
 import Footer from "./Footer";
+import ScrollToTop from "./ScrollToTop";
 import "./nav.css";
 import "./App.css";
 
@@ -206,294 +208,314 @@ function App() {
     return items;
   };
 
+  const Layout = ({ children }) => {
+    const location = useLocation();
+    const isLandingPage = location.pathname === "/";
+
+    return (
+      <>
+        {!isLandingPage && (
+          <>
+            <Navbar bg="light" variant="light" className="custom-navbar">
+              <Container>
+                <Navbar.Brand href="/" className="custom-navbar-brand">
+                  WMSparkTrack
+                </Navbar.Brand>
+                <Nav className="ml-auto custom-nav">
+                  <Link to="/" className="nav-link custom-nav-link">
+                    Home
+                  </Link>
+                  <Link to="/analytics" className="nav-link custom-nav-link">
+                    Analytics Dashboard
+                  </Link>
+                  <Link to="/predict_eta" className="nav-link custom-nav-link">
+                    Predict Shipment ETA
+                  </Link>
+                  {localStorage.getItem("token") ? (
+                    <Button
+                      variant="outline-primary"
+                      className="custom-nav-button"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </Button>
+                  ) : (
+                    <>
+                      <Link to="/login" className="nav-link custom-nav-link">
+                        Login
+                      </Link>
+                      <Link to="/register" className="nav-link custom-nav-link">
+                        Register
+                      </Link>
+                    </>
+                  )}
+                </Nav>
+              </Container>
+            </Navbar>
+            <ScrollToTop />
+          </>
+        )}
+        {children}
+        {!isLandingPage && <Footer />}
+      </>
+    );
+  };
+
   return (
     <Router>
-      <Navbar bg="light" variant="light" className="custom-navbar">
-        <Container>
-          <Navbar.Brand href="/" className="custom-navbar-brand">
-            WMSparkTrack
-          </Navbar.Brand>
-          <Nav className="ml-auto custom-nav">
-            <Link to="/" className="nav-link custom-nav-link">
-              Home
-            </Link>
-            <Link to="/analytics" className="nav-link custom-nav-link">
-              Analytics Dashboard
-            </Link>
-            <Link to="/predict_eta" className="nav-link custom-nav-link">
-              Predict Shipment ETA
-            </Link>
-            {localStorage.getItem("token") ? (
-              <Button
-                variant="outline-primary"
-                className="custom-nav-button"
-                onClick={handleLogout}
-              >
-                Logout
-              </Button>
-            ) : (
-              <>
-                <Link to="/login" className="nav-link custom-nav-link">
-                  Login
-                </Link>
-                <Link to="/register" className="nav-link custom-nav-link">
-                  Register
-                </Link>
-              </>
-            )}
-          </Nav>
-        </Container>
-      </Navbar>
-
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route
-          path="/home"
-          element={
-            <PrivateRoute>
-              <Container className="mt-4">
-                <div className="heading">
-                  <h1>Real-Time Shipment Tracking</h1>
-                </div>
-                <Row className="search-bar-row mb-3 align-items-center top-buttons">
-                  <Col>
-                    <Form>
-                      <FormControl
-                        type="search"
-                        placeholder="Search by Shipment ID, Origin, or Destination"
-                        className="mr-sm-2 search-input"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </Form>
-                  </Col>
-
-                  <Col xs="auto">
-                    <Button
-                      onClick={() => setOpenFilters(!openFilters)}
-                      aria-controls="filter-section"
-                      aria-expanded={openFilters}
-                      variant="secondary"
-                      className="show-filters"
-                    >
-                      {openFilters ? "Hide Filters" : "Show Filters"}
-                    </Button>
-                  </Col>
-                  <Col xs="auto">
-                    <Link to="/add_shipment">
-                      <Button variant="success" className="btn-custom">
-                        Add Shipment
-                      </Button>
-                    </Link>
-                  </Col>
-                </Row>
-
-                <Collapse in={openFilters}>
-                  <div id="filter-section" className="mb-3">
-                    <Form>
-                      <Row>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Shipment ID</Form.Label>
-                            <FormControl
-                              type="text"
-                              placeholder="Shipment ID"
-                              value={filterConfig.shipment_id}
-                              onChange={(e) =>
-                                handleFilterChange("shipment_id", e.target.value)
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Origin</Form.Label>
-                            <FormControl
-                              type="text"
-                              placeholder="Origin"
-                              value={filterConfig.origin}
-                              onChange={(e) =>
-                                handleFilterChange("origin", e.target.value)
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-
-                      <Row>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Destination</Form.Label>
-                            <FormControl
-                              type="text"
-                              placeholder="Destination"
-                              value={filterConfig.destination}
-                              onChange={(e) =>
-                                handleFilterChange(
-                                  "destination",
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Current Location</Form.Label>
-                            <FormControl
-                              type="text"
-                              placeholder="Current Location"
-                              value={filterConfig.current_location}
-                              onChange={(e) =>
-                                handleFilterChange(
-                                  "current_location",
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-
-                      <Row>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>Status</Form.Label>
-                            <FormControl
-                              type="text"
-                              placeholder="Status"
-                              value={filterConfig.status}
-                              onChange={(e) =>
-                                handleFilterChange("status", e.target.value)
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>ETA</Form.Label>
-                            <FormControl
-                              type="text"
-                              placeholder="ETA"
-                              value={filterConfig.eta}
-                              onChange={(e) =>
-                                handleFilterChange("eta", e.target.value)
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                    </Form>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/home"
+            element={
+              <PrivateRoute>
+                <Container className="mt-4">
+                  <div className="heading">
+                    <h1>Real-Time Shipment Tracking</h1>
                   </div>
-                </Collapse>
+                  <Row className="search-bar-row mb-3 align-items-center top-buttons">
+                    <Col>
+                      <Form>
+                        <FormControl
+                          type="search"
+                          placeholder="Search by Shipment ID, Origin, or Destination"
+                          className="mr-sm-2 search-input"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                      </Form>
+                    </Col>
 
-                <div className="table-container">
-                  <Table striped bordered hover>
-                    <thead>
-                      <tr>
-                        <th onClick={() => requestSort("id")}>
-                          ID {getSortIcon("id")}
-                        </th>
-                        <th onClick={() => requestSort("shipment_id")}>
-                          Shipment ID {getSortIcon("shipment_id")}
-                        </th>
-                        <th onClick={() => requestSort("origin")}>
-                          Origin {getSortIcon("origin")}
-                        </th>
-                        <th onClick={() => requestSort("destination")}>
-                          Destination {getSortIcon("destination")}
-                        </th>
-                        <th onClick={() => requestSort("current_location")}>
-                          Current Location {getSortIcon("current_location")}
-                        </th>
-                        <th onClick={() => requestSort("status")}>
-                          Status {getSortIcon("status")}
-                        </th>
-                        <th onClick={() => requestSort("eta")}>
-                          ETA {getSortIcon("eta")}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentItems.map((shipment) => (
-                        <tr key={shipment.id}>
-                          <td>{shipment.id}</td>
-                          <td>
-                            <Link to={`/shipment/${shipment.id}`}>
-                              {shipment.shipment_id}
-                            </Link>
-                          </td>
-                          <td>{shipment.origin}</td>
-                          <td>{shipment.destination}</td>
-                          <td>{shipment.current_location}</td>
-                          <td>{shipment.status}</td>
-                          <td>{shipment.eta}</td>
+                    <Col xs="auto">
+                      <Button
+                        onClick={() => setOpenFilters(!openFilters)}
+                        aria-controls="filter-section"
+                        aria-expanded={openFilters}
+                        variant="secondary"
+                        className="show-filters"
+                      >
+                        {openFilters ? "Hide Filters" : "Show Filters"}
+                      </Button>
+                    </Col>
+                    <Col xs="auto">
+                      <Link to="/add_shipment">
+                        <Button variant="success" className="btn-custom">
+                          Add Shipment
+                        </Button>
+                      </Link>
+                    </Col>
+                  </Row>
+
+                  <Collapse in={openFilters}>
+                    <div id="filter-section" className="mb-3">
+                      <Form>
+                        <Row>
+                          <Col md={6}>
+                            <Form.Group>
+                              <Form.Label>Shipment ID</Form.Label>
+                              <FormControl
+                                type="text"
+                                placeholder="Shipment ID"
+                                value={filterConfig.shipment_id}
+                                onChange={(e) =>
+                                  handleFilterChange(
+                                    "shipment_id",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col md={6}>
+                            <Form.Group>
+                              <Form.Label>Origin</Form.Label>
+                              <FormControl
+                                type="text"
+                                placeholder="Origin"
+                                value={filterConfig.origin}
+                                onChange={(e) =>
+                                  handleFilterChange("origin", e.target.value)
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                        </Row>
+
+                        <Row>
+                          <Col md={6}>
+                            <Form.Group>
+                              <Form.Label>Destination</Form.Label>
+                              <FormControl
+                                type="text"
+                                placeholder="Destination"
+                                value={filterConfig.destination}
+                                onChange={(e) =>
+                                  handleFilterChange(
+                                    "destination",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col md={6}>
+                            <Form.Group>
+                              <Form.Label>Current Location</Form.Label>
+                              <FormControl
+                                type="text"
+                                placeholder="Current Location"
+                                value={filterConfig.current_location}
+                                onChange={(e) =>
+                                  handleFilterChange(
+                                    "current_location",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                        </Row>
+
+                        <Row>
+                          <Col md={6}>
+                            <Form.Group>
+                              <Form.Label>Status</Form.Label>
+                              <FormControl
+                                type="text"
+                                placeholder="Status"
+                                value={filterConfig.status}
+                                onChange={(e) =>
+                                  handleFilterChange("status", e.target.value)
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col md={6}>
+                            <Form.Group>
+                              <Form.Label>ETA</Form.Label>
+                              <FormControl
+                                type="text"
+                                placeholder="ETA"
+                                value={filterConfig.eta}
+                                onChange={(e) =>
+                                  handleFilterChange("eta", e.target.value)
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                      </Form>
+                    </div>
+                  </Collapse>
+
+                  <div className="table-container">
+                    <Table striped bordered hover>
+                      <thead>
+                        <tr>
+                          <th onClick={() => requestSort("id")}>
+                            ID {getSortIcon("id")}
+                          </th>
+                          <th onClick={() => requestSort("shipment_id")}>
+                            Shipment ID {getSortIcon("shipment_id")}
+                          </th>
+                          <th onClick={() => requestSort("origin")}>
+                            Origin {getSortIcon("origin")}
+                          </th>
+                          <th onClick={() => requestSort("destination")}>
+                            Destination {getSortIcon("destination")}
+                          </th>
+                          <th onClick={() => requestSort("current_location")}>
+                            Current Location {getSortIcon("current_location")}
+                          </th>
+                          <th onClick={() => requestSort("status")}>
+                            Status {getSortIcon("status")}
+                          </th>
+                          <th onClick={() => requestSort("eta")}>
+                            ETA {getSortIcon("eta")}
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {currentItems.map((shipment) => (
+                          <tr key={shipment.id}>
+                            <td>{shipment.id}</td>
+                            <td>
+                              <Link to={`/shipment/${shipment.id}`}>
+                                {shipment.shipment_id}
+                              </Link>
+                            </td>
+                            <td>{shipment.origin}</td>
+                            <td>{shipment.destination}</td>
+                            <td>{shipment.current_location}</td>
+                            <td>{shipment.status}</td>
+                            <td>{shipment.eta}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </div>
 
-                <div className="pagination-container">
-                  <Pagination>
-                    <Pagination.Prev
-                      onClick={() =>
-                        currentPage > 1 && paginate(currentPage - 1)
-                      }
-                    >
-                      Previous
-                    </Pagination.Prev>
-                    {getPaginationItems()}
-                    <Pagination.Next
-                      onClick={() =>
-                        currentPage < totalPages && paginate(currentPage + 1)
-                      }
-                    >
-                      Next
-                    </Pagination.Next>
-                  </Pagination>
-                </div>
-              </Container>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/shipment/:id"
-          element={
-            <PrivateRoute>
-              <ShipmentDetail shipments={shipments} />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/predict_eta"
-          element={
-            <PrivateRoute>
-              <ETAPrediction />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/analytics"
-          element={
-            <PrivateRoute>
-              <AnalyticsDashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/add_shipment"
-          element={
-            <PrivateRoute>
-              <AddShipment />
-            </PrivateRoute>
-          }
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-      </Routes>
-      <Footer />
+                  <div className="pagination-container">
+                    <Pagination>
+                      <Pagination.Prev
+                        onClick={() =>
+                          currentPage > 1 && paginate(currentPage - 1)
+                        }
+                      >
+                        Previous
+                      </Pagination.Prev>
+                      {getPaginationItems()}
+                      <Pagination.Next
+                        onClick={() =>
+                          currentPage < totalPages && paginate(currentPage + 1)
+                        }
+                      >
+                        Next
+                      </Pagination.Next>
+                    </Pagination>
+                  </div>
+                </Container>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/shipment/:id"
+            element={
+              <PrivateRoute>
+                <ShipmentDetail shipments={shipments} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/predict_eta"
+            element={
+              <PrivateRoute>
+                <ETAPrediction />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <PrivateRoute>
+                <AnalyticsDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/add_shipment"
+            element={
+              <PrivateRoute>
+                <AddShipment />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        </Routes>
+      </Layout>
     </Router>
   );
 }
