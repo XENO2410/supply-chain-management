@@ -115,6 +115,20 @@ def serve_react_app(path):
         return send_from_directory(app.static_folder, 'index.html')
 
 # Shipment API endpoints
+@app.route('/api/shipments', methods=['GET'])
+def get_all_shipments():
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    cursor.execute("""
+        SELECT s.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone, c.address as customer_address
+        FROM shipments s
+        LEFT JOIN customers c ON s.shipment_id = c.shipment_id
+    """)
+    shipments = cursor.fetchall()
+    conn.close()
+
+    return jsonify(shipments)
+
 @app.route('/api/shipments/<int:shipment_id>', methods=['GET'])
 def get_shipment(shipment_id):
     conn = get_db_connection()
