@@ -15,7 +15,7 @@ import io
 
 app = Flask(__name__, static_folder='supply-chain-visibility-frontend/build')
 app.secret_key = 'a_random_string_with_numbers_1234567890_and_symbols_!@#$%^&*()'
-CORS(app, resources={r"/api/*": {"origins": "*"}})  # Adjust CORS settings as needed
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -188,7 +188,7 @@ def add_shipment():
 @app.route('/api/shipments/<int:shipment_id>', methods=['PUT'])
 def update_shipment(shipment_id):
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
 
     cursor.execute("SELECT * FROM shipments WHERE id = %s", (shipment_id,))
     current_shipment = cursor.fetchone()
@@ -199,38 +199,39 @@ def update_shipment(shipment_id):
     new_status = request.json.get('status')
     new_location = request.json.get('current_location')
     new_eta = request.json.get('eta')
-
-    # Check for valid status
-    valid_statuses = [
-        'Order Received', 'Processing', 'Ready for Pickup', 'Picked Up', 
-        'In Transit', 'Out for Delivery', 'Delayed', 'At Customs', 
-        'Failed Delivery Attempt', 'Returned to Sender', 'Delivered', 
-        'Cancelled'
-    ]
-
-    if new_status not in valid_statuses:
-        return jsonify({"error": "Invalid status"}), 400
+    new_origin = request.json.get('origin')
+    new_destination = request.json.get('destination')
 
     cursor.execute('''
-        UPDATE shipments SET status = %s, current_location = %s, eta = %s WHERE id = %s
-    ''', (new_status, new_location, new_eta, shipment_id))
+        UPDATE shipments 
+        SET status = %s, current_location = %s, eta = %s, origin = %s, destination = %s 
+        WHERE id = %s
+    ''', (new_status, new_location, new_eta, new_origin, new_destination, shipment_id))
 
     cursor.execute('''
         INSERT INTO shipment_history (shipment_id, previous_status, new_status, previous_location, new_location, updated_by)
         VALUES (%s, %s, %s, %s, %s, %s)
     ''', (
         shipment_id,
-        current_shipment[5],  # previous status
-        new_status,           # new status
-        current_shipment[4],  # previous location
-        new_location,         # new location
+        current_shipment['status'],  # previous status
+        new_status,                  # new status
+        current_shipment['current_location'],  # previous location
+        new_location,                # new location
         current_user.username if current_user.is_authenticated else 'System'  # who updated
     ))
 
     conn.commit()
+
+    cursor.execute("""
+        SELECT s.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone, c.address as customer_address
+        FROM shipments s
+        LEFT JOIN customers c ON s.shipment_id = c.shipment_id
+        WHERE s.id = %s
+    """, (shipment_id,))
+    updated_shipment = cursor.fetchone()
     conn.close()
 
-    return jsonify({"message": "Shipment updated successfully"})
+    return jsonify(updated_shipment)
 
 @app.route('/api/shipments/<int:shipment_id>/history', methods=['GET'])
 def get_shipment_history(shipment_id):

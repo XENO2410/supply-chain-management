@@ -9,7 +9,6 @@ import truck from './icons/truck-icon.png';
 import red from './icons/red-marker-icon.png';
 import green from './icons/green-marker-icon.png';
 
-// Custom icons
 const originIcon = L.icon({
   iconUrl: red,
   iconSize: [38, 38],
@@ -28,7 +27,6 @@ const truckIcon = L.icon({
   iconAnchor: [19, 19],
 });
 
-// Function to get coordinates from location
 const getCoordinatesFromLocation = async (location) => {
   const response = await fetch(
     `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
@@ -43,7 +41,6 @@ const getCoordinatesFromLocation = async (location) => {
   }
 };
 
-// Component to set map bounds
 const SetMapBounds = ({ bounds }) => {
   const map = useMap();
   map.fitBounds(bounds);
@@ -139,7 +136,7 @@ function ShipmentDetail() {
       .then(data => {
         setShipment(data);
         setEditMode(false);
-        navigate('/home');  // Navigate back to the home page after saving
+        navigate('/home');
       })
       .catch(error => console.error('Update error:', error));
   };
@@ -193,7 +190,97 @@ function ShipmentDetail() {
         <h1 className="shipment-detail-main-title">Shipment Details</h1>
         {editMode ? (
           <Form className="shipment-form">
-            {/* Form content */}
+            <Form.Group controlId="shipmentId">
+              <Form.Label>Shipment ID</Form.Label>
+              <Form.Control
+                type="text"
+                name="shipment_id"
+                value={formData.shipment_id}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="origin">
+              <Form.Label>Origin</Form.Label>
+              <Form.Control
+                type="text"
+                name="origin"
+                value={formData.origin}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="destination">
+              <Form.Label>Destination</Form.Label>
+              <Form.Control
+                type="text"
+                name="destination"
+                value={formData.destination}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="currentLocation">
+              <Form.Label>Current Location</Form.Label>
+              <Form.Control
+                type="text"
+                name="current_location"
+                value={formData.current_location}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="status">
+              <Form.Label>Status</Form.Label>
+              <Form.Control
+                type="text"
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="eta">
+              <Form.Label>ETA</Form.Label>
+              <Form.Control
+                type="text"
+                name="eta"
+                value={formData.eta}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <h3 className="customer-detail-title">Customer Details</h3>
+            <Form.Group controlId="customerName">
+              <Form.Label>Customer Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="customer_name"
+                value={formData.customer_name}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="customerEmail">
+              <Form.Label>Customer Email</Form.Label>
+              <Form.Control
+                type="text"
+                name="customer_email"
+                value={formData.customer_email}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="customerPhone">
+              <Form.Label>Customer Phone</Form.Label>
+              <Form.Control
+                type="text"
+                name="customer_phone"
+                value={formData.customer_phone}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="customerAddress">
+              <Form.Label>Customer Address</Form.Label>
+              <Form.Control
+                type="text"
+                name="customer_address"
+                value={formData.customer_address}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
             <Button variant="primary" onClick={handleSaveChanges} className="btn-save">
               Save Changes
             </Button>
