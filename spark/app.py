@@ -190,7 +190,6 @@ def update_shipment(shipment_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Check if the shipment exists
     cursor.execute("SELECT * FROM shipments WHERE id = %s", (shipment_id,))
     current_shipment = cursor.fetchone()
 
@@ -201,14 +200,13 @@ def update_shipment(shipment_id):
     new_location = request.json.get('current_location')
     new_eta = request.json.get('eta')
 
-    # Check for valid status
+    # Validate status
     valid_statuses = [
         'Order Received', 'Processing', 'Ready for Pickup', 'Picked Up', 
         'In Transit', 'Out for Delivery', 'Delayed', 'At Customs', 
         'Failed Delivery Attempt', 'Returned to Sender', 'Delivered', 
         'Cancelled'
     ]
-
     if new_status not in valid_statuses:
         return jsonify({"error": "Invalid status"}), 400
 
@@ -216,7 +214,6 @@ def update_shipment(shipment_id):
         UPDATE shipments SET status = %s, current_location = %s, eta = %s WHERE id = %s
     ''', (new_status, new_location, new_eta, shipment_id))
 
-    # Insert into shipment_history
     cursor.execute('''
         INSERT INTO shipment_history (shipment_id, previous_status, new_status, previous_location, new_location, updated_by)
         VALUES (%s, %s, %s, %s, %s, %s)
@@ -234,12 +231,10 @@ def update_shipment(shipment_id):
 
     return jsonify({"message": "Shipment updated successfully"})
 
-
 @app.route('/api/shipments/<int:shipment_id>/history', methods=['GET'])
 def get_shipment_history(shipment_id):
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
-    
     cursor.execute("SELECT * FROM shipment_history WHERE shipment_id = %s", (shipment_id,))
     history_entries = cursor.fetchall()
     conn.close()
@@ -293,7 +288,6 @@ def predict_eta():
     status = data.get('status')
 
     try:
-        # Encode inputs
         origin_encoded = encode_label(label_encoder, origin)
         destination_encoded = encode_label(label_encoder, destination)
         current_location_encoded = encode_label(label_encoder, current_location)
@@ -327,7 +321,6 @@ def load_data():
 def train_model():
     df = load_data()
 
-    # Feature Engineering
     le = LabelEncoder()
     df['origin_encoded'] = le.fit_transform(df['origin'])
     df['destination_encoded'] = le.fit_transform(df['destination'])
@@ -357,26 +350,22 @@ def get_analytics():
     shipments = cursor.fetchall()
     conn.close()
 
-    # Initialize data structures for storing analytics
     average_delivery_time = []
     delayed_shipments_count = {}
     status_distribution = {}
 
-    # Current time for calculating delivery days
     current_time = pd.Timestamp.now()
 
     for shipment in shipments:
         eta_date = pd.to_datetime(shipment['eta'])
         delivery_days = (eta_date - current_time).days
 
-        # Only consider non-negative delivery days
         if delivery_days >= 0:
             average_delivery_time.append({
                 "date": eta_date.strftime('%Y-%m-%d'),
                 "days": delivery_days
             })
 
-        # Count delayed shipments by date
         if shipment['status'].lower() == 'delayed':
             date_key = eta_date.strftime('%Y-%m-%d')
             if date_key in delayed_shipments_count:
@@ -384,17 +373,13 @@ def get_analytics():
             else:
                 delayed_shipments_count[date_key] = 1
 
-        # Count shipments by status
         status_key = shipment['status']
         if status_key in status_distribution:
             status_distribution[status_key] += 1
         else:
             status_distribution[status_key] = 1
 
-    # Convert delayed_shipments_count to a list of dictionaries
     delayed_shipments_list = [{"date": k, "count": v} for k, v in delayed_shipments_count.items()]
-
-    # Convert status_distribution to a list of dictionaries
     status_distribution_list = [{"status": k, "value": v} for k, v in status_distribution.items()]
 
     analytics_data = {
@@ -404,6 +389,60 @@ def get_analytics():
     }
 
     return jsonify(analytics_data)
+
+# Data Export Endpoint
+@app.route('/api/export_shipments', methods=['GET'])
+@login_required
+def export_shipments():
+    conn = get_db_connection()
+    df = pd.read_sql_query("SELECT * FROM shipments", conn)
+    conn.close()
+
+    export_format = request.args.get('format', 'csv')
+
+    if export_format == 'csv':
+        csv_data = df.to_csv(index=False)
+        return Response(
+            csv_data,
+            mimetype="text/csv",
+            headers={"Content-disposition": "attachment; filename=shipments.csv"}
+        )
+    elif export_format == 'excel':
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Shipments')
+        output.seek(0)
+        return send_file(
+            output,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='shipments.xlsx'
+        )
+    else:
+        return jsonify({"error": "Unsupported format"}), 400
+
+# Reporting Endpoint
+@app.route('/api/report', methods=['GET'])
+@login_required
+def generate_report():
+    conn = get_db_connection()
+    df = pd.read_sql_query("SELECT * FROM shipments", conn)
+    conn.close()
+
+    status_summary = df['status'].value_counts().to_frame().reset_index()
+    status_summary.columns = ['Status', 'Count']
+
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        status_summary.to_excel(writer, index=False, sheet_name='Status Summary')
+    output.seek(0)
+
+    return send_file(
+        output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True,
+        download_name='shipment_report.xlsx'
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)
