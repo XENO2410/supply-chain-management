@@ -13,6 +13,8 @@ function AddShipment() {
     eta: "",
   });
 
+  const [error, setError] = useState(null); // Error handling state
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setShipment({
@@ -23,7 +25,8 @@ function AddShipment() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Submit the form data to the backend API
+    setError(null); // Reset error state before submission
+
     fetch("https://wmsparktrack.onrender.com/api/shipments", {
       method: "POST",
       headers: {
@@ -31,12 +34,26 @@ function AddShipment() {
       },
       body: JSON.stringify(shipment),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
       .then((data) => {
         alert("Shipment added successfully!");
         // Optionally, redirect or clear the form
+        setShipment({
+          shipment_id: "",
+          origin: "",
+          destination: "",
+          current_location: "",
+          status: "",
+          eta: "",
+        });
       })
       .catch((error) => {
+        setError("Error adding shipment: " + error.message);
         console.error("Error adding shipment:", error);
       });
   };
@@ -44,6 +61,7 @@ function AddShipment() {
   return (
     <Container className="add-shipment-container">
       <h2 className="add-shipment-title">Add New Shipment</h2>
+      {error && <p className="error-message">{error}</p>} {/* Display errors */}
       <Form onSubmit={handleSubmit}>
         <Row>
           <Col md={6}>

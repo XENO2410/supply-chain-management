@@ -56,6 +56,7 @@ function App() {
   const [openFilters, setOpenFilters] = useState(false);
   const itemsPerPage = 20;
 
+  // Fetch shipments data only once when the component mounts
   useEffect(() => {
     const fetchData = () => {
       const token = localStorage.getItem("token");
@@ -68,11 +69,8 @@ function App() {
         .then((data) => setShipments(data));
     };
 
-    fetchData();
-    const interval = setInterval(fetchData, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
+    fetchData(); // Fetch data on component mount
+  }, []); // Empty dependency array ensures it only runs once
 
   const requestSort = (key) => {
     let direction = "ascending";
@@ -218,11 +216,11 @@ function App() {
           <>
             <Navbar bg="light" variant="light" className="custom-navbar">
               <Container>
-                <Navbar.Brand href="/" className="custom-navbar-brand">
+                <Navbar.Brand href="/home" className="custom-navbar-brand">
                   WMSparkTrack
                 </Navbar.Brand>
                 <Nav className="ml-auto custom-nav">
-                  <Link to="/" className="nav-link custom-nav-link">
+                  <Link to="/home" className="nav-link custom-nav-link">
                     Home
                   </Link>
                   <Link to="/analytics" className="nav-link custom-nav-link">
