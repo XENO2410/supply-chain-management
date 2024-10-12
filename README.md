@@ -1,6 +1,6 @@
 # WMSparkTrack
 
-[![Vercel](https://img.shields.io/badge/frontend-Vercel-brightgreen)](https://train-seat-booking-murex.vercel.app/)
+[![Vercel](https://img.shields.io/badge/frontend-Vercel-brightgreen)](https://wmsparktrack.vercel.app/)
 [![Render](https://img.shields.io/badge/backend-Render-blue)](https://wmsparktrack.onrender.com/)
 
 A web application that provides real-time visibility into the supply chain, allowing users to track shipments, predict estimated time of arrival (ETA), and view analytics. This project includes both a frontend and backend, which work together to deliver a seamless user experience.
