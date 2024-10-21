@@ -123,12 +123,8 @@ A web application that provides real-time visibility into the supply chain, allo
 
 - **GET** `/api/analytics` - Retrieve analytics data related to shipments.
 
-## Contributing
-
-Contributions are welcome! Please fork this repository and submit a pull request for any feature you would like to add or improve.
 
 ### Key Updates:
 
 - Updated the backend technology stack to reflect the use of PostgreSQL hosted on Supabase instead of SQLite.
-- Included instructions for setting up environment variables necessary for connecting to the PostgreSQL database.
 - Adjusted the backend setup instructions to use `gunicorn` for running the application in production, which is a more suitable choice for deployment environments like Render.
