@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, redirect, url_for, send_from_director
 import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from psycopg2.pool import SimpleConnectionPool
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -12,24 +13,44 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 import pickle
 import io
+from flask_compress import Compress
 
 app = Flask(__name__, static_folder='supply-chain-visibility-frontend/build')
 app.secret_key = 'a_random_string_with_numbers_1234567890_and_symbols_!@#$%^&*()'
+
+# Enable gzip compression
+Compress(app)
+
+# Enable CORS
 CORS(app)
+
+# Bcrypt with reduced rounds for faster hashing
+
+# Configure bcrypt work factor
+app.config['BCRYPT_LOG_ROUNDS'] = 10  # Reduce work factor for faster hashing
+
 bcrypt = Bcrypt(app)
+
+# Login manager
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# Database connection setup
+# Database connection pooling setup
+db_pool = SimpleConnectionPool(
+    minconn=1,
+    maxconn=10,  # Adjust this value based on your load
+    host="aws-0-ap-south-1.pooler.supabase.com",
+    database="postgres",
+    user="postgres.mmnmntijjtvnuqrkbcof",
+    password="JBFz2L?GPn%-_Xs",
+    port="6543"
+)
+
 def get_db_connection():
-    conn = psycopg2.connect(
-        host="aws-0-ap-south-1.pooler.supabase.com",
-        database="postgres",
-        user="postgres.mmnmntijjtvnuqrkbcof",
-        password="JBFz2L?GPn%-_Xs",
-        port="6543"
-    )
-    return conn
+    return db_pool.getconn()
+
+def release_db_connection(conn):
+    db_pool.putconn(conn)
 
 # User class for flask-login
 class User(UserMixin):
@@ -43,7 +64,7 @@ def load_user(user_id):
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
     user = cursor.fetchone()
-    conn.close()
+    release_db_connection(conn)
     if user:
         return User(user['id'], user['username'])
     return None
@@ -70,7 +91,7 @@ def register():
         return jsonify({"error": "Username already exists"}), 400
     finally:
         cursor.close()
-        conn.close()
+        release_db_connection(conn)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -82,7 +103,7 @@ def login():
 
     cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
     user = cursor.fetchone()
-    conn.close()
+    release_db_connection(conn)
 
     if user and bcrypt.check_password_hash(user['password'], password):
         login_user(User(user['id'], user['username']))
@@ -105,27 +126,25 @@ def logout():
 def protected():
     return jsonify({"message": f"Hello, {current_user.username}!"})
 
-# Serve React App
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_react_app(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
-
-# Shipment API endpoints
+# Shipment API endpoints with pagination
 @app.route('/api/shipments', methods=['GET'])
 def get_all_shipments():
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('per_page', 10))
+    offset = (page - 1) * per_page
+
     cursor.execute("""
         SELECT s.*, c.name as customer_name, c.email as customer_email, c.phone as customer_phone, c.address as customer_address
         FROM shipments s
         LEFT JOIN customers c ON s.shipment_id = c.shipment_id
-    """)
+        LIMIT %s OFFSET %s
+    """, (per_page, offset))
+
     shipments = cursor.fetchall()
-    conn.close()
+    release_db_connection(conn)
 
     return jsonify(shipments)
 
@@ -140,7 +159,7 @@ def get_shipment(shipment_id):
         WHERE s.id = %s
     """, (shipment_id,))
     shipment = cursor.fetchone()
-    conn.close()
+    release_db_connection(conn)
 
     if shipment:
         return jsonify(shipment)
@@ -181,7 +200,7 @@ def add_shipment():
         ))
 
     conn.commit()
-    conn.close()
+    release_db_connection(conn)
 
     return jsonify({"message": "Shipment and customer added successfully"}), 201
 
@@ -202,9 +221,9 @@ def update_shipment(shipment_id):
 
     # Validate status
     valid_statuses = [
-        'Order Received', 'Processing', 'Ready for Pickup', 'Picked Up', 
-        'In Transit', 'Out for Delivery', 'Delayed', 'At Customs', 
-        'Failed Delivery Attempt', 'Returned to Sender', 'Delivered', 
+        'Order Received', 'Processing', 'Ready for Pickup', 'Picked Up',
+        'In Transit', 'Out for Delivery', 'Delayed', 'At Customs',
+        'Failed Delivery Attempt', 'Returned to Sender', 'Delivered',
         'Cancelled'
     ]
     if new_status not in valid_statuses:
@@ -227,7 +246,7 @@ def update_shipment(shipment_id):
     ))
 
     conn.commit()
-    conn.close()
+    release_db_connection(conn)
 
     return jsonify({"message": "Shipment updated successfully"})
 
@@ -237,7 +256,7 @@ def get_shipment_history(shipment_id):
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute("SELECT * FROM shipment_history WHERE shipment_id = %s", (shipment_id,))
     history_entries = cursor.fetchall()
-    conn.close()
+    release_db_connection(conn)
 
     return jsonify(history_entries)
 
@@ -261,7 +280,7 @@ def add_customer():
     ))
 
     conn.commit()
-    conn.close()
+    release_db_connection(conn)
 
     return jsonify({"message": "Customer added successfully"}), 201
 
@@ -271,7 +290,7 @@ def get_customer(customer_id):
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute("SELECT * FROM customers WHERE id = %s", (customer_id,))
     customer = cursor.fetchone()
-    conn.close()
+    release_db_connection(conn)
 
     if customer:
         return jsonify(customer)
@@ -314,7 +333,7 @@ def encode_label(encoder, value):
 def load_data():
     conn = get_db_connection()
     df = pd.read_sql_query("SELECT * FROM shipments", conn)
-    conn.close()
+    release_db_connection(conn)
     return df
 
 # Train Model
@@ -348,7 +367,7 @@ def get_analytics():
 
     cursor.execute("SELECT origin, destination, current_location, status, eta FROM shipments")
     shipments = cursor.fetchall()
-    conn.close()
+    release_db_connection(conn)
 
     average_delivery_time = []
     delayed_shipments_count = {}
@@ -396,7 +415,7 @@ def get_analytics():
 def export_shipments():
     conn = get_db_connection()
     df = pd.read_sql_query("SELECT * FROM shipments", conn)
-    conn.close()
+    release_db_connection(conn)
 
     export_format = request.args.get('format', 'csv')
 
@@ -427,7 +446,7 @@ def export_shipments():
 def generate_report():
     conn = get_db_connection()
     df = pd.read_sql_query("SELECT * FROM shipments", conn)
-    conn.close()
+    release_db_connection(conn)
 
     status_summary = df['status'].value_counts().to_frame().reset_index()
     status_summary.columns = ['Status', 'Count']

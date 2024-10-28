@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Form, Button} from 'react-bootstrap';
+import { Container, Form, Button, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './shared.css';
 
@@ -8,35 +8,36 @@ function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when submitting
+    setError(''); // Clear any previous errors
 
-    fetch('https://wmsparktrack.onrender.com/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then((data) => {
-            throw new Error(data.error || 'Login failed');
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Login successful:', data);
-        localStorage.setItem('token', data.access_token);
-        navigate('/');
-      })
-      .catch(error => {
-        console.error('Login error:', error);
-        setError('Invalid username or password');
+    try {
+      const response = await fetch('https://wmsparktrack.onrender.com/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
       });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Login failed');
+      }
+
+      const data = await response.json();
+      localStorage.setItem('token', data.access_token);
+      navigate('/home');
+    } catch (error) {
+      setError('Invalid username or password');
+    } finally {
+      setLoading(false); // Stop loading regardless of success or failure
+    }
   };
 
   return (
@@ -65,15 +66,15 @@ function Login() {
             />
           </Form.Group>
 
-          <Button variant="primary" type="submit" className="mt-4">
-            Login
+          <Button variant="primary" type="submit" className="mt-4" disabled={loading}>
+            {loading ? <Spinner animation="border" size="sm" /> : 'Login'} {/* Show loading spinner */}
           </Button>
         </Form>
         <div className="text-center mt-3">
           <Link to="/forgot-password">Forgot Password?</Link>
         </div>
         <div className="text-center mt-3">
-        Not registered yet? 
+          Not registered yet?
           <Link to="/register"> Create an account</Link>
         </div>
       </Container>

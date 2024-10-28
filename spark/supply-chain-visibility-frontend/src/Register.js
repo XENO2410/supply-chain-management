@@ -1,34 +1,44 @@
-import React, { useState } from "react";
-import { Container, Form, Button } from "react-bootstrap";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { Container, Form, Button, Spinner } from 'react-bootstrap';
+import { useNavigate, Link } from 'react-router-dom';
 import './shared.css';
 
 function Register() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError('Passwords do not match');
       return;
     }
 
-    const response = await fetch("https://wmsparktrack.onrender.com/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    setLoading(true); // Set loading to true when submitting
+    setError(''); // Clear any previous errors
 
-    if (response.ok) {
-      navigate("/login");
-    } else {
-      setError("Registration failed");
+    try {
+      const response = await fetch('https://wmsparktrack.onrender.com/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        navigate('/login');
+      } else {
+        setError('Registration failed');
+      }
+    } catch (error) {
+      setError('An error occurred during registration');
+    } finally {
+      setLoading(false); // Stop loading regardless of success or failure
     }
   };
 
@@ -71,12 +81,12 @@ function Register() {
             />
           </Form.Group>
 
-          <Button variant="primary" type="submit" className="mt-4">
-            Register
+          <Button variant="primary" type="submit" className="mt-4" disabled={loading}>
+            {loading ? <Spinner animation="border" size="sm" /> : 'Register'} {/* Show loading spinner */}
           </Button>
         </Form>
         <div className="text-center mt-3">
-        Already have an account?
+          Already have an account?
           <Link to="/login"> Login here</Link>
         </div>
       </Container>
