@@ -25,7 +25,7 @@ A web application that provides real-time visibility into the supply chain, allo
 
 - **User Authentication**: Register and login to the platform.
 - **Shipment Tracking**: Track real-time shipment information.
-- **ETA Prediction**: Predict estimated time of arrival for shipments.
+- **ETA Prediction**: Predict the estimated time of arrival for shipments.
 - **Analytics Dashboard**: View various analytics related to shipment status, delays, and delivery times.
 - **Responsive Design**: The frontend is built to be fully responsive across all device sizes.
 
